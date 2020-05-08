@@ -1,17 +1,15 @@
 /*
  * Copyright (C) 2015 coastland
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package jp.co.tis.gsp.tools.dba.dialect;
@@ -33,11 +31,9 @@ public class ExtendedOracleGenDialect extends OracleGenDialect {
         super();
         columnTypeMap.put("date", ExtendedOracleColumnType.DATE);
         columnTypeMap.put("timestamp", ExtendedOracleColumnType.TIMESTAMP);
-        columnTypeMap.put("number", new OracleColumnType(
-                "number($p,$s)", BigDecimal.class) {
+        columnTypeMap.put("number", new OracleColumnType("number($p,$s)", BigDecimal.class) {
             @Override
-            public Class<?> getAttributeClass(int length, int precision,
-                                              int scale) {
+            public Class<?> getAttributeClass(int length, int precision, int scale) {
                 if (scale != 0) {
                     return BigDecimal.class;
                 }
@@ -57,7 +53,7 @@ public class ExtendedOracleGenDialect extends OracleGenDialect {
             }
         });
     }
-    
+
     @Override
     public ColumnType getColumnType(String typeName, int sqlType) {
         if (useOracleDate && StringUtil.equalsIgnoreCase(typeName, "date")) {
@@ -75,14 +71,14 @@ public class ExtendedOracleGenDialect extends OracleGenDialect {
     }
 
     public static class ExtendedOracleColumnType extends OracleColumnType {
-        private static ExtendedOracleColumnType DATE = new ExtendedOracleColumnType("date",
-                java.sql.Date.class, false, TemporalType.DATE);
-        
-        private static ExtendedOracleColumnType TIMESTAMP = new ExtendedOracleColumnType("timestamp($s)",
-                Timestamp.class, false, TemporalType.TIMESTAMP);
-        
-        public ExtendedOracleColumnType(String dataType, Class<?> attributeClass,
-                boolean lob, TemporalType temporalType) {
+        private static ExtendedOracleColumnType DATE =
+                new ExtendedOracleColumnType("date", java.sql.Date.class, false, TemporalType.DATE);
+
+        private static ExtendedOracleColumnType TIMESTAMP = new ExtendedOracleColumnType(
+                "timestamp($s)", Timestamp.class, false, TemporalType.TIMESTAMP);
+
+        public ExtendedOracleColumnType(String dataType, Class<?> attributeClass, boolean lob,
+                TemporalType temporalType) {
             super(dataType, attributeClass, lob, temporalType);
         }
     }
