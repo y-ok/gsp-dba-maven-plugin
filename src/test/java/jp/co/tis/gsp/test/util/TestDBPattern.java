@@ -8,9 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 public @interface TestDBPattern {
-
-	String testCase() default "";
-
-	TestDB[] testDb() default {};
-
+    String testCase() default "";
+    TestDB[] testDb() default {};
 }
