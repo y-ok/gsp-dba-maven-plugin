@@ -18,7 +18,7 @@ import jp.co.tis.gsp.tools.dba.dialect.Dialect;
 import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
 import org.seasar.framework.util.DriverManagerUtil;

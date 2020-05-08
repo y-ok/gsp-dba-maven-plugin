@@ -16,19 +16,18 @@
 
 package jp.co.tis.gsp.tools.dba.dialect;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 public class DialectFactory {
-	public static Dialect getDialect(String url, String driver) {
-		String[] urlTokens = StringUtils.split(url, ':');
-		if(urlTokens.length < 3) {
-			throw new IllegalArgumentException("url isn't jdbc url format.");
-		}
-		Dialect dialect;
-		try {
+    public static Dialect getDialect(String url, String driver) {
+        String[] urlTokens = StringUtils.split(url, ':');
+        if(urlTokens.length < 3) {
+            throw new IllegalArgumentException("url isn't jdbc url format.");
+        }
+        Dialect dialect;
+        try {
             Class<?> dialectClass;
             if (classMap.containsKey(urlTokens[1])) {
                 dialectClass = classMap.get(urlTokens[1]);
@@ -39,15 +38,15 @@ public class DialectFactory {
                         +StringUtils.capitalize(urlTokens[1])+"Dialect";
                 dialectClass = Class.forName(dialectClassName);
             }
-			dialect = (Dialect)dialectClass.newInstance();
-			dialect.setUrl(url);
-			dialect.setDriver(driver);
-		} catch(Exception e) {
-			throw new IllegalArgumentException("Unsupported Database product:" + urlTokens[1], e);
-		}
+            dialect = (Dialect)dialectClass.getDeclaredConstructor().newInstance();
+            dialect.setUrl(url);
+            dialect.setDriver(driver);
+        } catch(Exception e) {
+            throw new IllegalArgumentException("Unsupported Database product:" + urlTokens[1], e);
+        }
 
-		return dialect;
-	}
+        return dialect;
+    }
 
     private static Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
     public static void registerOptionalDialects(Map<String, String> optionalDialectClassNames) {

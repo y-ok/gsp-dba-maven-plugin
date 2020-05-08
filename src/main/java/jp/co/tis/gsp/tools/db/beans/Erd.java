@@ -17,11 +17,11 @@
 package jp.co.tis.gsp.tools.db.beans;
 
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.apache.commons.lang3.StringUtils;
 
-import org.apache.commons.lang.StringUtils;
+
 
 @XmlRootElement(name="ERD")
 public class Erd {

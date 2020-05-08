@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AlternativeGenerator {
-	public abstract void generate(List<Map<String, String>> objectDef, AbstractDbObjectParser context);
+    public abstract void generate(List<Map<String, String>> objectDef, AbstractDbObjectParser context);
 
-	public abstract String getName();
+    public abstract String getName();
 }

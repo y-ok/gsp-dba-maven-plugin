@@ -30,7 +30,7 @@ import java.util.TreeSet;
 import javax.sql.DataSource;
 import jp.co.tis.gsp.tools.dba.dialect.Dialect;
 import jp.co.tis.gsp.tools.dba.util.DialectUtil;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.seasar.extension.jdbc.gen.dialect.GenDialect;
 import org.seasar.extension.jdbc.gen.internal.meta.DbTableMetaReaderImpl;
 import org.seasar.extension.jdbc.gen.meta.DbForeignKeyMeta;

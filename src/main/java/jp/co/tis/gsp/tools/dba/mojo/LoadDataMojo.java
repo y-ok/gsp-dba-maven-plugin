@@ -18,6 +18,7 @@ package jp.co.tis.gsp.tools.dba.mojo;
 
 import java.io.File;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import jp.co.tis.gsp.tools.dba.util.CsvLoader;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -55,13 +56,13 @@ public class LoadDataMojo extends AbstractDbaMojo {
     @SuppressWarnings("rawtypes")
     protected Map specifiedEncodingFiles;
 
-    final Charset SJIS = Charset.forName("Windows-31J");
+    final Charset UTF_8 = StandardCharsets.UTF_8;
 
     @Override
     protected void executeMojoSpec() throws MojoExecutionException {
 
-        final CsvLoader dataLoader = new CsvLoader(url, driver, schema, adminUser, adminPassword, dataDirectory, SJIS,
-                specifiedEncodingFiles, onError, getLog());
+        final CsvLoader dataLoader = new CsvLoader(url, driver, schema, adminUser, adminPassword, dataDirectory, 
+                UTF_8, specifiedEncodingFiles, onError, getLog());
         try {
             dataLoader.execute();
         } catch (final Exception e) {

@@ -26,11 +26,11 @@ import org.apache.commons.io.IOUtils;
 
 public class ProcessUtil {
 
-	public static void exec(String... args) throws IOException, InterruptedException {
+    public static void exec(String... args) throws IOException {
         exec(null, args);
-	}
+    }
 
-    public static void exec(Map<String, String> environment, String... args) throws IOException, InterruptedException {
+    public static void exec(Map<String, String> environment, String... args) throws IOException {
         
         Process process = null;
         InputStream stdout = null;
@@ -57,7 +57,7 @@ public class ProcessUtil {
             IOUtils.closeQuietly(stdout);
             
             if(process != null){
-            	process.destroy();
+                process.destroy();
             }
         }
     }

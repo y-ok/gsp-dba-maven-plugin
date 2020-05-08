@@ -2,8 +2,8 @@ package jp.co.tis.gsp.tools.dba.dialect.param;
 
 import java.io.File;
 import java.nio.charset.Charset;
-
 import org.apache.maven.plugin.logging.Log;
+
 
 public class ImportParams {
 

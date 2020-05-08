@@ -17,9 +17,7 @@
 package jp.co.tis.gsp.tools.dba.s2jdbc.gen;
 
 import java.io.Serializable;
-
 import javax.annotation.Generated;
-
 import jp.co.tis.gsp.tools.dba.mojo.ExtendedGenerateEntityCommand;
 import org.seasar.doma.Column;
 import org.seasar.doma.Entity;
@@ -45,6 +43,8 @@ import org.seasar.extension.jdbc.gen.model.CompositeUniqueConstraintModelFactory
 import org.seasar.extension.jdbc.gen.model.EntityModel;
 import org.seasar.extension.jdbc.gen.model.EntityModelFactory;
 import org.seasar.framework.convention.PersistenceConvention;
+
+
 
 public class DomaGspFactoryImpl extends FactoryImpl {
 

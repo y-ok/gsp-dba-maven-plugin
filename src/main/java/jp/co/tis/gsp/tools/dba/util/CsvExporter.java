@@ -1,5 +1,6 @@
 package jp.co.tis.gsp.tools.dba.util;
 
+import com.csvreader.CsvWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -18,21 +19,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-
+import jp.co.tis.gsp.tools.dba.dialect.Dialect;
+import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
 import org.seasar.framework.util.DriverManagerUtil;
 import org.seasar.framework.util.OutputStreamUtil;
 import org.seasar.framework.util.ResultSetUtil;
 import org.seasar.framework.util.StatementUtil;
 
-import com.csvreader.CsvWriter;
-
-import jp.co.tis.gsp.tools.dba.dialect.Dialect;
-import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
-
 public class CsvExporter {
-
-
     private String url;
     private String driver;
     private String schema;
@@ -170,7 +165,7 @@ public class CsvExporter {
             }
 
             List<String> columnList = new ArrayList<String>(columnTypeMap.keySet());
-            csvWriter.writeRecord((String[]) columnList.toArray(new String[0]));
+            csvWriter.writeRecord(columnList.toArray(new String[0]));
 
             // データの出力
             while (resultSet.next()) {

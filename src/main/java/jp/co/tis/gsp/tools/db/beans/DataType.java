@@ -21,31 +21,31 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="TYPETABLE")
 public class DataType {
-	/** データ型の名前 */
-	private String name;
-	
-	/** データ型の種類 0は長さを持たない*/
-	private Integer lenType;
+    /** データ型の名前 */
+    private String name;
+    
+    /** データ型の種類 0は長さを持たない*/
+    private Integer lenType;
 
-	@XmlAttribute(name="NAME")
-	public String getName() {
-		return name;
-	}
+    @XmlAttribute(name="NAME")
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@XmlAttribute(name="LEN-TYPE")
-	public Integer getLenType() {
-		return lenType;
-	}
+    @XmlAttribute(name="LEN-TYPE")
+    public Integer getLenType() {
+        return lenType;
+    }
 
-	public void setLenType(Integer lenType) {
-		this.lenType = lenType;
-	}
-	
-	public Boolean hasDataLength() {
-		return (lenType != 0);
-	}
+    public void setLenType(Integer lenType) {
+        this.lenType = lenType;
+    }
+    
+    public Boolean hasDataLength() {
+        return (lenType != 0);
+    }
 }

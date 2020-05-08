@@ -30,9 +30,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import jp.co.tis.gsp.tools.db.TypeMapper;
+import jp.co.tis.gsp.tools.dba.dialect.param.ExportParams;
+import jp.co.tis.gsp.tools.dba.dialect.param.ImportParams;
+import jp.co.tis.gsp.tools.dba.util.ProcessUtil;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.seasar.extension.jdbc.gen.dialect.GenDialectRegistry;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
@@ -40,10 +43,7 @@ import org.seasar.framework.util.FileOutputStreamUtil;
 import org.seasar.framework.util.ResultSetUtil;
 import org.seasar.framework.util.StatementUtil;
 
-import jp.co.tis.gsp.tools.db.TypeMapper;
-import jp.co.tis.gsp.tools.dba.dialect.param.ExportParams;
-import jp.co.tis.gsp.tools.dba.dialect.param.ImportParams;
-import jp.co.tis.gsp.tools.dba.util.ProcessUtil;
+
 
 public class PostgresqlDialect extends Dialect {
     private static final List<String> USABLE_TYPE_NAMES = new ArrayList<String>();
@@ -81,9 +81,9 @@ public class PostgresqlDialect extends Dialect {
         FileOutputStream out = null;
         try {
             File dumpFile = params.getDumpFile();
-		    String user = params.getUser();
-		    String password = params.getPassword();
-		    String schema = params.getSchema();
+            String user = params.getUser();
+            String password = params.getPassword();
+            String schema = params.getSchema();
             
             ProcessBuilder pb = new ProcessBuilder(
                     "pg_dump",
@@ -128,30 +128,30 @@ public class PostgresqlDialect extends Dialect {
         try {
             conn = DriverManager.getConnection(url, adminUser, adminPassword);
             stmt = conn.createStatement();
-          	
+              
             if(!existsSchema(conn, normalizeSchemaName(schema))){
-           		stmt.execute("CREATE SCHEMA " + schema);
+                   stmt.execute("CREATE SCHEMA " + schema);
                 stmt.execute("ALTER SCHEMA " + schema + " OWNER TO " + user);
                 stmt.execute("ALTER USER " + user + " Set search_path TO " + schema);
-            	return;
+                return;
             }else{
-            	// 指定スキーマが存在する場合はスキーマ操作権限を念のため与えておく
+                // 指定スキーマが存在する場合はスキーマ操作権限を念のため与えておく
                 stmt.execute("ALTER SCHEMA " + schema + " OWNER TO " + user);
                 stmt.execute("ALTER USER " + user + " Set search_path TO " + schema);
             }
 
-			// スキーマ内のテーブル、ビュー、シーケンス削除
+            // スキーマ内のテーブル、ビュー、シーケンス削除
             String nmzschema = normalizeSchemaName(schema);
             String dropListSql = "SELECT TABLE_NAME, CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS WHERE TABLE_SCHEMA='" + nmzschema +
-					               "' AND CONSTRAINT_TYPE='FOREIGN KEY'";
-			dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.FK);
-			
-			dropListSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA='" + nmzschema + "'";
-			dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.VIEW);
-			
-			dropListSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE' AND TABLE_SCHEMA='" + nmzschema + "'";
-	        dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.TABLE);
-			
+                                   "' AND CONSTRAINT_TYPE='FOREIGN KEY'";
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.FK);
+            
+            dropListSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA='" + nmzschema + "'";
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.VIEW);
+            
+            dropListSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE' AND TABLE_SCHEMA='" + nmzschema + "'";
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.TABLE);
+            
         } catch (SQLException e) {
             throw new MojoExecutionException("データ削除中にエラー", e);
         } finally {
@@ -179,8 +179,8 @@ public class PostgresqlDialect extends Dialect {
     @Override
     public void importSchema(ImportParams params) throws MojoExecutionException {
 
-	    String user = params.getAdminUser();
-	    String password = params.getAdminPassword();
+        String user = params.getAdminUser();
+        String password = params.getAdminPassword();
 
         Map<String, String> environment = new HashMap<String, String>();
         if (StringUtils.isNotEmpty(password)) {
@@ -190,8 +190,8 @@ public class PostgresqlDialect extends Dialect {
         try {
             File dumpFile = params.getDumpFile();
 
-		    if (!dumpFile.exists())
-		        throw new MojoExecutionException(dumpFile.getName() + " is not found?");
+            if (!dumpFile.exists())
+                throw new MojoExecutionException(dumpFile.getName() + " is not found?");
 
             String[] args = new String[]{
                     "psql",
@@ -219,7 +219,7 @@ public class PostgresqlDialect extends Dialect {
             conn = DriverManager.getConnection(url, adminUser, adminPassword);
             stmt = conn.createStatement();
             if (existsUser(conn, role)) {
-            	return;
+                return;
             }
             
             stmt.execute("CREATE ROLE " + role + " LOGIN PASSWORD \'" + password + "\'");

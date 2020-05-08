@@ -3,13 +3,13 @@ package jp.co.tis.gsp.tools.dba.mojo;
 import java.io.File;
 import jp.co.tis.gsp.test.util.DirUtil;
 import jp.co.tis.gsp.test.util.Entry;
-import jp.co.tis.gsp.test.util.TestDBPattern;
-import jp.co.tis.gsp.test.util.TestDB;
 import jp.co.tis.gsp.test.util.MojoTestFixture;
+import jp.co.tis.gsp.test.util.TestDB;
+import jp.co.tis.gsp.test.util.TestDBPattern;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.apache.maven.plugin.MojoExecutionException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;

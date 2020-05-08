@@ -16,20 +16,20 @@
 
 package jp.co.tis.gsp.tools.dba.s2jdbc.gen;
 
-import org.seasar.extension.jdbc.gen.internal.dialect.StandardGenDialect;
-
 import java.sql.Connection;
 import java.util.List;
+import org.seasar.extension.jdbc.gen.internal.dialect.StandardGenDialect;
+
 
 public class SolrGenDialect extends StandardGenDialect {
-	public SolrGenDialect() {
-		super();
-		columnTypeMap.put("ARRAY", SolrColumnType.ARRAY);
+    public SolrGenDialect() {
+        super();
+        columnTypeMap.put("ARRAY", SolrColumnType.ARRAY);
         columnTypeMap.put("VARCHAR_ARRAY", columnTypeMap.get("VARCHAR"));
         columnTypeMap.put("DATE_ARRAY", columnTypeMap.get("DATE"));
         columnTypeMap.put("INT_ARRAY", columnTypeMap.get("INT"));
         columnTypeMap.put("LONG_ARRAY", columnTypeMap.get("LONG"));
-	}
+    }
 
     @Override
     public String getName() {
@@ -54,15 +54,15 @@ public class SolrGenDialect extends StandardGenDialect {
     }
 
     public static class SolrColumnType extends StandardColumnType {
-    	private static SolrColumnType ARRAY = new SolrColumnType("ARRAY", List.class);
+        private static SolrColumnType ARRAY = new SolrColumnType("ARRAY", List.class);
 
-		public SolrColumnType(String dataType, Class<?> attributeClass) {
-			super(dataType, attributeClass);
+        public SolrColumnType(String dataType, Class<?> attributeClass) {
+            super(dataType, attributeClass);
 
-		}
+        }
 
-		public SolrColumnType(String dataType, Class<?> attributeClass,
-				boolean lob) {
+        public SolrColumnType(String dataType, Class<?> attributeClass,
+                boolean lob) {
             super(dataType, attributeClass, lob);
         }
         @Override

@@ -21,69 +21,69 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="RELATION")
 public class Relation {
-	private Integer id;
+    private Integer id;
 
-	private String label;
+    private String label;
 
-	private String name;
+    private String name;
 
-	private Integer parentEntityId;
+    private Integer parentEntityId;
 
-	private Integer childEntityId;
+    private Integer childEntityId;
 
-	private Integer showType;
+    private Integer showType;
 
-	@XmlAttribute(name="ID")
-	public Integer getId() {
-		return id;
-	}
+    @XmlAttribute(name="ID")
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@XmlAttribute(name="P-NAME")
-	public String getLabel() {
-		return label;
-	}
+    @XmlAttribute(name="P-NAME")
+    public String getLabel() {
+        return label;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-	@XmlAttribute(name="L-NAME")
-	public String getName() {
-		return name;
-	}
+    @XmlAttribute(name="L-NAME")
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@XmlAttribute(name="P-ENTITY")
-	public Integer getParentEntityId() {
-		return parentEntityId;
-	}
+    @XmlAttribute(name="P-ENTITY")
+    public Integer getParentEntityId() {
+        return parentEntityId;
+    }
 
-	public void setParentEntityId(Integer parentEntityId) {
-		this.parentEntityId = parentEntityId;
-	}
+    public void setParentEntityId(Integer parentEntityId) {
+        this.parentEntityId = parentEntityId;
+    }
 
-	@XmlAttribute(name="C-ENTITY")
-	public Integer getChildEntityId() {
-		return childEntityId;
-	}
+    @XmlAttribute(name="C-ENTITY")
+    public Integer getChildEntityId() {
+        return childEntityId;
+    }
 
-	public void setChildEntityId(Integer childEntityId) {
-		this.childEntityId = childEntityId;
-	}
+    public void setChildEntityId(Integer childEntityId) {
+        this.childEntityId = childEntityId;
+    }
 
-	@XmlAttribute(name="SHOWTYPE")
-	public Integer getShowType() {
-		return showType;
-	}
+    @XmlAttribute(name="SHOWTYPE")
+    public Integer getShowType() {
+        return showType;
+    }
 
-	public void setShowType(Integer showType) {
-		this.showType = showType;
-	}
+    public void setShowType(Integer showType) {
+        this.showType = showType;
+    }
 }

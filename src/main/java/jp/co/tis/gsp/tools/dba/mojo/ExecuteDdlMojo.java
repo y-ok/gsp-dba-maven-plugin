@@ -19,16 +19,15 @@ package jp.co.tis.gsp.tools.dba.mojo;
 
 import java.io.File;
 import java.sql.SQLException;
-
+import jp.co.tis.gsp.tools.dba.dialect.Dialect;
+import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
+import jp.co.tis.gsp.tools.dba.util.SqlExecutor;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.seasar.framework.util.DriverManagerUtil;
 
-import jp.co.tis.gsp.tools.dba.dialect.Dialect;
-import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
-import jp.co.tis.gsp.tools.dba.util.SqlExecutor;
+
 
 /**
  * execute-ddl.
@@ -39,11 +38,11 @@ import jp.co.tis.gsp.tools.dba.util.SqlExecutor;
  */
 @Mojo(name = "execute-ddl")
 public class ExecuteDdlMojo extends AbstractDbaMojo {
-	/**
+    /**
      * DDL directory.
-	 */
+     */
     @Parameter(defaultValue = "target/ddl")
-	protected File ddlDirectory;
+    protected File ddlDirectory;
 
     @Parameter
     protected File extraDdlDirectory;
@@ -51,26 +50,26 @@ public class ExecuteDdlMojo extends AbstractDbaMojo {
     protected String delimiter = ";";
 
 
-	@Override
-	protected void executeMojoSpec() throws MojoExecutionException, MojoFailureException {
+    @Override
+    protected void executeMojoSpec() throws MojoExecutionException {
         DriverManagerUtil.registerDriver(driver);
-		Dialect dialect = DialectFactory.getDialect(url, driver);
-		
-		// ユーザの作成を行います
-		dialect.createUser(user, password, adminUser, adminPassword);
-		
-		// 指定スキーマ内のテーブル、ビュー、シーケンスを全て削除します。
-		// 指定スキーマが存在しない場合は作成します。
-		dialect.dropAll(user, password, adminUser, adminPassword, schema);
-		
-		// DDLの実行
-		SqlExecutor sqlExecutor = new SqlExecutor(url, user, password, ddlDirectory, extraDdlDirectory, delimiter, onError, getLog());
-		try {
+        Dialect dialect = DialectFactory.getDialect(url, driver);
+        
+        // ユーザの作成を行います
+        dialect.createUser(user, password, adminUser, adminPassword);
+        
+        // 指定スキーマ内のテーブル、ビュー、シーケンスを全て削除します。
+        // 指定スキーマが存在しない場合は作成します。
+        dialect.dropAll(user, password, adminUser, adminPassword, schema);
+        
+        // DDLの実行
+        SqlExecutor sqlExecutor = new SqlExecutor(url, user, password, ddlDirectory, extraDdlDirectory, delimiter, onError, getLog());
+        try {
             sqlExecutor.execute();
         } catch (SQLException e) {
             throw new MojoExecutionException("DDLの実行に失敗しました:", e);
         }
-	}
+    }
 
 
 }

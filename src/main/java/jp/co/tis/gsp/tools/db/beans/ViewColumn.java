@@ -21,47 +21,47 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="COLUMN")
 public class ViewColumn {
-	private String name;
-	
-	private String value;
-	
-	private String alias;
-	
-	private String comment;
+    private String name;
+    
+    private String value;
+    
+    private String alias;
+    
+    private String comment;
 
-	@XmlAttribute(name="NAME")
-	public String getName() {
-		return name;
-	}
+    @XmlAttribute(name="NAME")
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@XmlAttribute(name="VALUE")
-	public String getValue() {
-		return value;
-	}
+    @XmlAttribute(name="VALUE")
+    public String getValue() {
+        return value;
+    }
 
-	public void setValue(String value) {
-		this.value = value;
-	}
+    public void setValue(String value) {
+        this.value = value;
+    }
 
-	@XmlAttribute(name="ALIAS")
-	public String getAlias() {
-		return alias;
-	}
+    @XmlAttribute(name="ALIAS")
+    public String getAlias() {
+        return alias;
+    }
 
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 
-	@XmlAttribute(name="COMMENT")
-	public String getComment() {
-		return comment;
-	}
+    @XmlAttribute(name="COMMENT")
+    public String getComment() {
+        return comment;
+    }
 
-	public void setComment(String comment) {
-		this.comment = comment;
-	}
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
 }

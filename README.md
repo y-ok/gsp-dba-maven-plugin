@@ -121,18 +121,18 @@ Java11で使用する場合pom.xmlに以下の設定を追加してください�
 以下のパラメータは全てのゴールで共通です。
 対応する値を設定してください。
 
-| 設定値    | 必須  | 説明                                                            |
-|:---------------|:-----:|:----------------------------------------------------------------|
-| driver         | ○     | 使用するJDBCドライバ。                                         |
-| url            | ○     | データベースのURL。 jdbc:subprotocol:subname 形式。            |
-| adminUser      | ○     | データベースのadminユーザ名。Oracleの場合はsysは指定出来ません。DB2の場合はデータベース作成ユーザか対象データベースでDBADM権限を持つユーザを指定して下さい(db2adminを指定すると、データベースのバージョンによってはエラーになります)。|
-| adminPassword  | ×     | adminUserに設定したユーザのパスワード。                        |
-| user           | ○     | データベースのユーザ名。 Oracleの場合はsysは指定出来ません。PostgreSQLの場合は常に小文字に変換して処理されます。|
-| password       | ×     | userに設定したユーザのパスワード。                             |
-| schema         | ×     | データベースのスキーマ名。<br />H2Databaseの場合は指定不可、常にPUBLICスキーマとして解釈します。<br /> MySQLの場合は指定不可、jdbcのURLのデータベース名をスキーマ名として設定します。<br /> 例）jdbc:mysql://localhost:3306/gspdb → gspdbをスキーマ名として内部で使用します。<br /> それ以外のDBでスキーマを指定しない場合はユーザ名と同じスキーマ名を使用すると解釈されます。 PostgreSQLの場合は常に小文字に、H2、DB2、Oracleの場合は常に大文字に変換して処理されます。|
-| dmpFile        | ×     | ダンプファイル名。指定しなかった場合、[スキーマ名].dmpとなる。 |
-|optionalDialects | ×    | 使用する[ダイアレクトクラス](#lnk_dialect)のFQCN。|
-|onError | ×    | generate-ddlとload-dataで使用。SQL実行中にエラーが発生した場合の挙動を指定。<br />`abort`(デフォルト)・・・処理を中断する。<br />`continue` ・・・処理を継続する。|
+| 設定値           | 必須  | 説明                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| :--------------- | :---: | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| driver           |   ○   | 使用するJDBCドライバ。                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| url              |   ○   | データベースのURL。 jdbc:subprotocol:subname 形式。                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| adminUser        |   ○   | データベースのadminユーザ名。Oracleの場合はsysは指定出来ません。DB2の場合はデータベース作成ユーザか対象データベースでDBADM権限を持つユーザを指定して下さい(db2adminを指定すると、データベースのバージョンによってはエラーになります)。                                                                                                                                                                                                                                   |
+| adminPassword    |   ×   | adminUserに設定したユーザのパスワード。                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| user             |   ○   | データベースのユーザ名。 Oracleの場合はsysは指定出来ません。PostgreSQLの場合は常に小文字に変換して処理されます。                                                                                                                                                                                                                                                                                                                                                         |
+| password         |   ×   | userに設定したユーザのパスワード。                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| schema           |   ×   | データベースのスキーマ名。<br />H2Databaseの場合は指定不可、常にPUBLICスキーマとして解釈します。<br /> MySQLの場合は指定不可、jdbcのURLのデータベース名をスキーマ名として設定します。<br /> 例）jdbc:mysql://localhost:3306/gspdb → gspdbをスキーマ名として内部で使用します。<br /> それ以外のDBでスキーマを指定しない場合はユーザ名と同じスキーマ名を使用すると解釈されます。 PostgreSQLの場合は常に小文字に、H2、DB2、Oracleの場合は常に大文字に変換して処理されます。 |
+| dmpFile          |   ×   | ダンプファイル名。指定しなかった場合、[スキーマ名].dmpとなる。                                                                                                                                                                                                                                                                                                                                                                                                           |
+| optionalDialects |   ×   | 使用する[ダイアレクトクラス](#lnk_dialect)のFQCN。                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| onError          |   ×   | generate-ddlとload-dataで使用。SQL実行中にエラーが発生した場合の挙動を指定。<br />`abort`(デフォルト)・・・処理を中断する。<br />`continue` ・・・処理を継続する。                                                                                                                                                                                                                                                                                                       |
 
  * optionalDialectsの指定方法  
  使用するダイアレクトクラスを変更する場合、以下の形式でデータベースと対応するダイアレクトクラスを定義します。
@@ -155,12 +155,12 @@ Java11で使用する場合pom.xmlに以下の設定を追加してください�
 データモデルを解析し、DDLを生成します。
 生成するDDLとファイル名の対応は以下の通りです。
 
-| DDLの種類        | ファイル名                                    |
-|:-----------------|:----------------------------------------------|
-| テーブル定義     | 10_CREATE_<テーブル名>.sql                    |
-| インデックス定義 | 20_CREATE_<インデックスの物理名>.sql          |
-| 外部キー定義     | 30_CREATE_FK_<テーブル名><連番>.sql           |
-| ビュー定義       | 40_CREATE_<ビューの物理名>.sql                |
+| DDLの種類        | ファイル名                           |
+| :--------------- | :----------------------------------- |
+| テーブル定義     | 10_CREATE_<テーブル名>.sql           |
+| インデックス定義 | 20_CREATE_<インデックスの物理名>.sql |
+| 外部キー定義     | 30_CREATE_FK_<テーブル名><連番>.sql  |
+| ビュー定義       | 40_CREATE_<ビューの物理名>.sql       |
 
 また自動採番がDDLに反映されるルールは[こちら](./recipe/spec-generateDdl.md)で確認してください。
 
@@ -198,13 +198,13 @@ Java11で使用する場合pom.xmlに以下の設定を追加してください�
 
 #### 使用可能なパラメータ
 
-| 設定値                      | 必須  | 説明                                                            |
-|:---------------------------|:-----:|:----------------------------------------------------------------|
-| erdFile                    | ○     | erdファイルのパス。ワークディレクトリからの相対パスで指定する。 |
-| outputDirectory            | ×     | DDLの出力ディレクトリ。デフォルトは、"target/ddl"。             |
-| lengthSemantics            | ×     | 長さセマンティクス。デフォルトはバイト。                        |
-| ddlTemplateFileDir         | ×     | プロジェクト固有のDDLテンプレートの配置ディレクトリをワークディレクトリからの相対パスで指定する。 |
-| allocationSize            | ×     | シーケンス生成SQLの増分値(INCREMENT BY)。デフォルトは"1"。<br /> allocationSizeと[generate-entity](#generate-entity)のallocationSizeの値はは一致させるようにして下さい。<br />(eclipseLink) https://wiki.eclipse.org/Introduction_to_EclipseLink_JPA_(ELUG)  |
+| 設定値             | 必須  | 説明                                                                                                                                                                                                                                                        |
+| :----------------- | :---: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| erdFile            |   ○   | erdファイルのパス。ワークディレクトリからの相対パスで指定する。                                                                                                                                                                                             |
+| outputDirectory    |   ×   | DDLの出力ディレクトリ。デフォルトは、"target/ddl"。                                                                                                                                                                                                         |
+| lengthSemantics    |   ×   | 長さセマンティクス。デフォルトはバイト。                                                                                                                                                                                                                    |
+| ddlTemplateFileDir |   ×   | プロジェクト固有のDDLテンプレートの配置ディレクトリをワークディレクトリからの相対パスで指定する。                                                                                                                                                           |
+| allocationSize     |   ×   | シーケンス生成SQLの増分値(INCREMENT BY)。デフォルトは"1"。<br /> allocationSizeと[generate-entity](#generate-entity)のallocationSizeの値はは一致させるようにして下さい。<br />(eclipseLink) https://wiki.eclipse.org/Introduction_to_EclipseLink_JPA_(ELUG) |
 テンプレートをカスタマイズする際は、[generate-ddlで使用するテンプレートのカスタマイズ例](./recipe/custom-DdlTemplate.md)を参照してください。
 
 
@@ -245,10 +245,10 @@ Java11で使用する場合pom.xmlに以下の設定を追加してください�
 
 #### 使用可能なパラメータ
 
-| 設定値               | 必須  | 説明                                                            |
-|:---------------------|:-----:|:----------------------------------------------------------------|
-| ddlDirectory         | ×     | DDLの配置ディレクトリ。デフォルトは、"target/ddl"。             |
-| extraDdlDirectory    | ×     | 追加で実行したいSQLファイルの配置ディレクトリ。                 |
+| 設定値            | 必須  | 説明                                                |
+| :---------------- | :---: | :-------------------------------------------------- |
+| ddlDirectory      |   ×   | DDLの配置ディレクトリ。デフォルトは、"target/ddl"。 |
+| extraDdlDirectory |   ×   | 追加で実行したいSQLファイルの配置ディレクトリ。     |
 
 ### load-data
 
@@ -284,9 +284,9 @@ CSV形式で定義したデータを、データベースの指定したスキ�
 #### 使用可能なパラメータ
 
 | 設定値                 | 必須  | 説明                                                                        |
-|:-----------------------|:-----:|:----------------------------------------------------------------------------|
-| dataDirectory          | ○     | データファイルの配置ディレクトリ。                                          |
-| specifiedEncodingFiles | ×     | データファイルの文字コードを指定する場合に設定。デフォルトは"Windows-31J"。 |
+| :--------------------- | :---: | :-------------------------------------------------------------------------- |
+| dataDirectory          |   ○   | データファイルの配置ディレクトリ。                                          |
+| specifiedEncodingFiles |   ×   | データファイルの文字コードを指定する場合に設定。デフォルトは"Windows-31J"。 |
 
 
 * specifiedEncodingFilesの指定方法
@@ -407,21 +407,21 @@ CSV形式で定義したデータを、データベースの指定したスキ�
 
 #### 使用可能なパラメータ
 
-| 設定値                 | 必須  | 説明                                                                      |
-|:-----------------------|:-----:|:--------------------------------------------------------------------------|
-| ignoreTableNamePattern | ×    | 自動生成対象外とするテーブル名。正規表現で指定する。                      |
-| versionColumnNamePattern | ×    | @Versionアノテーション付与対象になるカラム名を正規表現で指定する。デフォルトは”VERSION([_]?NO)?”。<br />その他の付与条件に関しては[spec-generatedEntity.md](recipe/spec-generatedEntity.md)を参照。|
-| entityPackageName      | ×    | エンティティのパッケージ名。デフォルトは、”entity”。                    |
-| genDialectClassName    | ×    | S2JDBC-Genのダイアレクトインタフェースの実装クラス名。<br>カスタマイズする際は[GenDialectクラスのカスタマイズ例](./recipe/custom-genDialect.md)を参照してください。<br> |
-| dialectClassName       | ×    | S2JDBCのダイアレクトインタフェースの実装クラス名。<br />gsp-dba-maven-plugin で用意しているExtendedGenDialectクラスの登録キークラスと異なるクラス名を指定すると、ExtendedGenDialectクラスが利用されなくなるので指定の際には注意が必要です。|
-| rootPackage            | ○    | ルートパッケージ名。                                                      |
-| useAccessor            | ×    | アクセッサを使用するかどうか。デフォルトは、”false”。                   |
-| entityType             | ×    | 生成するEntityのタイプ。jpaとdomaが選択可能。デフォルトは、"jpa"。 <br />domaを指定する場合はentityTemplateに「java/gsp_doma_entity.ftl」を指定すること。|
-| entityTemplate         | ×    | entity の自動生成テンプレート。デフォルトは、"java/gsp_entity.ftl"。|
-|javaFileDestDir        | ×      | 生成されたentityのjavaファイルを配置するディレクトリ|
-|templateFilePrimaryDir | ×      |entityTemplateまでのパス。デフォルトは、"src/main/resources/org/seasar/extension/jdbc/gen/internal/generator/tempaltes"。<br>使用例:ファイルまでのパスが"src/main/resource/template/gsp_template.ftlの場合、それぞれ <br> entityTemplate: gsp_template.ftl <br> templateFilePrimaryDir:src/main/resource/template <br> と設定する。|
-| allocationSize         | ×     | @SequenceGeneratorのallocationSize。デフォルトは"1"。 <br />上記allocationSizeと[generate-ddl](#generate-ddl)のallocationSizeは一致させるようにして下さい。 <br />(eclipseLink) https://wiki.eclipse.org/Introduction_to_EclipseLink_JPA_(ELUG) |
-| useJSR310         | ×     |JSR301に対応したEntityを生成するかどうか。デフォルトは、”false”。                   |
+| 設定値                   | 必須  | 説明                                                                                                                                                                                                                                                                                                                                |
+| :----------------------- | :---: | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ignoreTableNamePattern   |   ×   | 自動生成対象外とするテーブル名。正規表現で指定する。                                                                                                                                                                                                                                                                                |
+| versionColumnNamePattern |   ×   | @Versionアノテーション付与対象になるカラム名を正規表現で指定する。デフォルトは”VERSION([_]?NO)?”。<br />その他の付与条件に関しては[spec-generatedEntity.md](recipe/spec-generatedEntity.md)を参照。                                                                                                                                 |
+| entityPackageName        |   ×   | エンティティのパッケージ名。デフォルトは、”entity”。                                                                                                                                                                                                                                                                                |
+| genDialectClassName      |   ×   | S2JDBC-Genのダイアレクトインタフェースの実装クラス名。<br>カスタマイズする際は[GenDialectクラスのカスタマイズ例](./recipe/custom-genDialect.md)を参照してください。<br>                                                                                                                                                             |
+| dialectClassName         |   ×   | S2JDBCのダイアレクトインタフェースの実装クラス名。<br />gsp-dba-maven-plugin で用意しているExtendedGenDialectクラスの登録キークラスと異なるクラス名を指定すると、ExtendedGenDialectクラスが利用されなくなるので指定の際には注意が必要です。                                                                                         |
+| rootPackage              |   ○   | ルートパッケージ名。                                                                                                                                                                                                                                                                                                                |
+| useAccessor              |   ×   | アクセッサを使用するかどうか。デフォルトは、”false”。                                                                                                                                                                                                                                                                               |
+| entityType               |   ×   | 生成するEntityのタイプ。jpaとdomaが選択可能。デフォルトは、"jpa"。 <br />domaを指定する場合はentityTemplateに「java/gsp_doma_entity.ftl」を指定すること。                                                                                                                                                                           |
+| entityTemplate           |   ×   | entity の自動生成テンプレート。デフォルトは、"java/gsp_entity.ftl"。                                                                                                                                                                                                                                                                |
+| javaFileDestDir          |   ×   | 生成されたentityのjavaファイルを配置するディレクトリ                                                                                                                                                                                                                                                                                |
+| templateFilePrimaryDir   |   ×   | entityTemplateまでのパス。デフォルトは、"src/main/resources/org/seasar/extension/jdbc/gen/internal/generator/tempaltes"。<br>使用例:ファイルまでのパスが"src/main/resource/template/gsp_template.ftlの場合、それぞれ <br> entityTemplate: gsp_template.ftl <br> templateFilePrimaryDir:src/main/resource/template <br> と設定する。 |
+| allocationSize           |   ×   | @SequenceGeneratorのallocationSize。デフォルトは"1"。 <br />上記allocationSizeと[generate-ddl](#generate-ddl)のallocationSizeは一致させるようにして下さい。 <br />(eclipseLink) https://wiki.eclipse.org/Introduction_to_EclipseLink_JPA_(ELUG)                                                                                     |
+| useJSR310                |   ×   | JSR301に対応したEntityを生成するかどうか。デフォルトは、”false”。                                                                                                                                                                                                                                                                   |
 テンプレートをカスタマイズする際は、[generate-entityで使用するテンプレートのカスタマイズ例](./recipe/custom-EntityTemplate.md)を参照してください。
 
 
@@ -469,11 +469,11 @@ DBMS固有のエクスポート機能を内部で呼び出すことで実現し�
 
 #### 使用可能なパラメータ
 
-| 設定値                 | 必須  | 説明                                                                                  |
-|:-----------------------|:-----:|:--------------------------------------------------------------------------------------|
-| outputDirectory        | ×     | データベーススキーマをエクスポートするディレクトリのパス。デフォルトは”target/dump”。 |
-| ddlDirectory           | ×     | [汎用モード](#汎用モード)で利用。 DDLディレクトリを指定する。                                  |
-| extraDdlDirectory      | ×     | [汎用モード](#汎用モード)で利用。 追加DDLディレクトリを指定する。                              |
+| 設定値            | 必須  | 説明                                                                                  |
+| :---------------- | :---: | :------------------------------------------------------------------------------------ |
+| outputDirectory   |   ×   | データベーススキーマをエクスポートするディレクトリのパス。デフォルトは”target/dump”。 |
+| ddlDirectory      |   ×   | [汎用モード](#汎用モード)で利用。 DDLディレクトリを指定する。                         |
+| extraDdlDirectory |   ×   | [汎用モード](#汎用モード)で利用。 追加DDLディレクトリを指定する。                     |
 
 #### <a name="exportSchemaGeneral"> 汎用モード
 - DB2とSQLServerの場合に動作するエクスポート処理の挙動で、DBMS固有のエクスポート機能を使用しません。
@@ -518,12 +518,12 @@ DBMS固有のエクスポート機能を内部で呼び出すことで実現し�
 
 #### 使用可能なパラメータ
 
-| 設定値                 | 必須  | 説明                                                                                  |
-|:-----------------------|:-----:|:--------------------------------------------------------------------------------------|
-| inputDirectory         | ×     | ダンプファイルの配置ディレクトリ。デフォルトは、”target/dump”。                       |
-| groupId                | ×     | ダンプファイルのグループID。デフォルトは、プロジェクトのグループID。                  |
-| artifactId             | ×     | ダンプファイルのアーティファクトID。デフォルトは、プロジェクトのアーティファクトID。  |
-| version                | ×     | ダンプファイルのバージョン。デフォルトは、プロジェクトのバージョン。                  |
+| 設定値         | 必須  | 説明                                                                                 |
+| :------------- | :---: | :----------------------------------------------------------------------------------- |
+| inputDirectory |   ×   | ダンプファイルの配置ディレクトリ。デフォルトは、”target/dump”。                      |
+| groupId        |   ×   | ダンプファイルのグループID。デフォルトは、プロジェクトのグループID。                 |
+| artifactId     |   ×   | ダンプファイルのアーティファクトID。デフォルトは、プロジェクトのアーティファクトID。 |
+| version        |   ×   | ダンプファイルのバージョン。デフォルトは、プロジェクトのバージョン。                 |
 
 #### <a name="importSchemaGeneral"> 汎用モード
 - DB2とSQLServerの場合は汎用モードのエクスポートとなるため、それを取り込むことでスキーマのインポートとなります。

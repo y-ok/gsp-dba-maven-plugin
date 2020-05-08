@@ -20,68 +20,68 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ForeignKey {
-	private String name;
+    private String name;
 
-	private List<Column> columnList;
-	private Entity referenceEntity;
-	private List<Column> referenceColumnList;
+    private List<Column> columnList;
+    private Entity referenceEntity;
+    private List<Column> referenceColumnList;
 
-	private Relation relation;
+    private Relation relation;
 
-	public ForeignKey() {
-		columnList = new ArrayList<Column>();
-		referenceColumnList = new ArrayList<Column>();
-	}
+    public ForeignKey() {
+        columnList = new ArrayList<Column>();
+        referenceColumnList = new ArrayList<Column>();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public List<Column> getColumnList() {
-		return columnList;
-	}
-	
-	public void addColumn(Column column) {
-		this.columnList.add(column);
-	}
+    public List<Column> getColumnList() {
+        return columnList;
+    }
+    
+    public void addColumn(Column column) {
+        this.columnList.add(column);
+    }
 
-	public void setColumnList(List<Column> columnList) {
-		this.columnList = columnList;
-	}
+    public void setColumnList(List<Column> columnList) {
+        this.columnList = columnList;
+    }
 
-	public Entity getReferenceEntity() {
-		return referenceEntity;
-	}
+    public Entity getReferenceEntity() {
+        return referenceEntity;
+    }
 
-	public void setReferenceEntity(Entity referenceEntity) {
-		this.referenceEntity = referenceEntity;
-	}
+    public void setReferenceEntity(Entity referenceEntity) {
+        this.referenceEntity = referenceEntity;
+    }
 
-	public List<Column> getReferenceColumnList() {
-		return referenceColumnList;
-	}
-	
-	public void addReferenceColumn(Column column) {
-		this.referenceColumnList.add(column);
-	}
+    public List<Column> getReferenceColumnList() {
+        return referenceColumnList;
+    }
+    
+    public void addReferenceColumn(Column column) {
+        this.referenceColumnList.add(column);
+    }
 
-	public void setReferenceColumnList(List<Column> referenceColumnList) {
-		this.referenceColumnList = referenceColumnList;
-	}
+    public void setReferenceColumnList(List<Column> referenceColumnList) {
+        this.referenceColumnList = referenceColumnList;
+    }
 
-	public Relation getRelation() {
-		return relation;
-	}
+    public Relation getRelation() {
+        return relation;
+    }
 
-	public void setRelation(Relation relation) {
-		this.relation = relation;
-	}
+    public void setRelation(Relation relation) {
+        this.relation = relation;
+    }
 
-	public Boolean hasName() {
-		return false;
-	}
+    public Boolean hasName() {
+        return false;
+    }
 }

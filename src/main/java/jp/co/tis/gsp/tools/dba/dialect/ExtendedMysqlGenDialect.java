@@ -17,10 +17,10 @@
 package jp.co.tis.gsp.tools.dba.dialect;
 
 import java.sql.Timestamp;
-
 import javax.persistence.TemporalType;
-
 import org.seasar.extension.jdbc.gen.internal.dialect.MysqlGenDialect;
+
+
 
 /**
  * @author Naoki Yamamoto
@@ -40,7 +40,7 @@ public class ExtendedMysqlGenDialect extends MysqlGenDialect {
                 java.sql.Date.class, false, TemporalType.DATE);
        
         private static ExtendedMysqlColumnType DATETIME = new ExtendedMysqlColumnType("datetime", 
-        		Timestamp.class, false, TemporalType.TIMESTAMP);
+                Timestamp.class, false, TemporalType.TIMESTAMP);
         
         private static ExtendedMysqlColumnType TIMESTAMP = new ExtendedMysqlColumnType("timestamp",
                 Timestamp.class, false, TemporalType.TIMESTAMP);

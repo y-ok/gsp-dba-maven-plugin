@@ -24,65 +24,65 @@ import java.util.regex.Pattern;
 import jp.co.tis.gsp.tools.db.beans.Column;
 
 public class TypeMapper {
-	static Pattern DATA_TYPE_PTN = Pattern.compile("(.*?)(?:\\((\\d+)(?:,(\\d+))?\\))?");
-	static Map<String, Integer> nameToTypeMap = new HashMap<String, Integer>();
+    static Pattern DATA_TYPE_PTN = Pattern.compile("(.*?)(?:\\((\\d+)(?:,(\\d+))?\\))?");
+    static Map<String, Integer> nameToTypeMap = new HashMap<String, Integer>();
 
-	static {
-		nameToTypeMap.put("VARCHAR", Types.VARCHAR);
-		nameToTypeMap.put("CHAR", Types.CHAR);
-		nameToTypeMap.put("TEXT", Types.CLOB);
-		nameToTypeMap.put("INT", Types.INTEGER);
-		nameToTypeMap.put("INTEGER", Types.INTEGER);
-		nameToTypeMap.put("BIGINT", Types.BIGINT);
-		nameToTypeMap.put("BOOLEAN", Types.BOOLEAN);
-	}
+    static {
+        nameToTypeMap.put("VARCHAR", Types.VARCHAR);
+        nameToTypeMap.put("CHAR", Types.CHAR);
+        nameToTypeMap.put("TEXT", Types.CLOB);
+        nameToTypeMap.put("INT", Types.INTEGER);
+        nameToTypeMap.put("INTEGER", Types.INTEGER);
+        nameToTypeMap.put("BIGINT", Types.BIGINT);
+        nameToTypeMap.put("BOOLEAN", Types.BOOLEAN);
+    }
 
-	private Map<Integer, String> typeToNameMap;
+    private Map<Integer, String> typeToNameMap;
 
-	public TypeMapper() {
+    public TypeMapper() {
 
-	}
+    }
 
-	public TypeMapper(Map<Integer, String> typeToNameMap) {
-		this();
-		setTypeToName(typeToNameMap);
-	}
+    public TypeMapper(Map<Integer, String> typeToNameMap) {
+        this();
+        setTypeToName(typeToNameMap);
+    }
 
-	public void setTypeToName(Map<Integer, String> typeToNameMap) {
-		this.typeToNameMap = typeToNameMap;
-	}
+    public void setTypeToName(Map<Integer, String> typeToNameMap) {
+        this.typeToNameMap = typeToNameMap;
+    }
 
-	public void convert(Column column) {
-		String originalName = column.getDataType();
-		Integer sqlType = nameToTypeMap.get(originalName);
+    public void convert(Column column) {
+        String originalName = column.getDataType();
+        Integer sqlType = nameToTypeMap.get(originalName);
 
-		// 該当するマッピングがなければ変換しない
-		if (sqlType == null || typeToNameMap == null)
-			return;
+        // 該当するマッピングがなければ変換しない
+        if (sqlType == null || typeToNameMap == null)
+            return;
 
-		String dbType = typeToNameMap.get(sqlType);
+        String dbType = typeToNameMap.get(sqlType);
 
-		// 該当するマッピングがなければ変換しない
-		if (dbType == null)
-			return;
+        // 該当するマッピングがなければ変換しない
+        if (dbType == null)
+            return;
 
-		Matcher m = DATA_TYPE_PTN.matcher(dbType);
-		if (m.matches()) {
-			if (m.group(1) != null) {
-				dbType = m.group(1);
-			}
-			if (m.group(2) != null) {
-				try {
-					Integer length = Integer.parseInt(m.group(2));
-					if (length != null && length != 0)
-						column.setLength(length);
-				} catch (NumberFormatException ex) {
-					throw new IllegalArgumentException(column.getName() + " " + column.getDataType(), ex);
-				}
-			}
-		}
-		column.setDataType(dbType);
+        Matcher m = DATA_TYPE_PTN.matcher(dbType);
+        if (m.matches()) {
+            if (m.group(1) != null) {
+                dbType = m.group(1);
+            }
+            if (m.group(2) != null) {
+                try {
+                    Integer length = Integer.parseInt(m.group(2));
+                    if (length != null && length != 0)
+                        column.setLength(length);
+                } catch (NumberFormatException ex) {
+                    throw new IllegalArgumentException(column.getName() + " " + column.getDataType(), ex);
+                }
+            }
+        }
+        column.setDataType(dbType);
 
-	}
+    }
 
 }

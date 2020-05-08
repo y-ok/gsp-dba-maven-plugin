@@ -98,431 +98,431 @@ import net.sf.jsqlparser.statement.select.ValuesList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.list.UnmodifiableList;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 
 public class ViewAnalyzer implements SelectVisitor, SelectItemVisitor,
-		FromItemVisitor {
-	private String tableName;
-	private List<String> simpleColumnNames;
-	private Map<String, String> aliases;
-	private boolean isSimple = true;
-	private CCJSqlParserManager pm;
-
-	public ViewAnalyzer() {
-		pm = new CCJSqlParserManager();
-		simpleColumnNames = new ArrayList<String>();
-		aliases = new HashMap<String, String>();
-	}
-
-	public void parse(String sql) {
-		isSimple = true;
-		tableName = null;
-		try {
-			net.sf.jsqlparser.statement.Statement statement = pm
-					.parse(new StringReader(sql));
-			if (statement instanceof Select) {
-				Select selectStatement = (Select) statement;
-				visit(selectStatement);
-			} else if (statement instanceof CreateView) {
-				CreateView createViewStatement = (CreateView) statement;
-				this.parse(createViewStatement.getSelectBody().toString());
-			}
-		} catch (JSQLParserException e) {
-			System.err.println("VIEW定義をパース出来ませんでした");
-		}
-	}
-
-	public boolean isSimple() {
-		return isSimple;
-	}
-
-	public String getTableName() {
-		// MySQLではバッククォートで囲まれるので取り除く
-		return StringUtils.strip(tableName, "`");
-	}
-
-	public String getAlias(String columnName) {
-		return aliases.get(columnName);
-	}
-	@SuppressWarnings("unchecked")
-	public List<String> getColumnNames() {
-		return UnmodifiableList.decorate(simpleColumnNames);
-	}
-	public void visit(Select select) {
-		select.getSelectBody().accept(this);
-	}
-
-	@Override
-	public void visit(Table table) {
-		tableName = table.getName();
-	}
-
-	@Override
-	public void visit(SubSelect subSelect) {
-		isSimple = false;
-	}
-
-	@Override
-	public void visit(SubJoin arg0) {
-		isSimple = false;
-	}
-
-	@Override
-	public void visit(AllColumns arg0) {
-	}
-
-	@Override
-	public void visit(AllTableColumns arg0) {
-	}
-
-	@Override
-	public void visit(SelectExpressionItem item) {
-		ColumnParser columnParser = new ColumnParser();
-		item.getExpression().accept(columnParser);
-		if (columnParser.isSimple()) {
-			String columnName = columnParser.getColumnName();
-			simpleColumnNames.add(columnName);
-			if(item.getAlias() != null){
-			    aliases.put(columnName, StringUtils.strip(item.getAlias().getName(), "`").toUpperCase());
-			}
-		}
-	}
-
-	@Override
-	public void visit(PlainSelect select) {
-		if (!CollectionUtils.isEmpty(select.getGroupByColumnReferences())
-			|| !CollectionUtils.isEmpty(select.getJoins())) {
-			isSimple = false;
-		} else {
-			select.getFromItem().accept(this);
-			for (SelectItem item : select.getSelectItems()) {
-				item.accept(this);
-			}
-		}
-	}
-
-	@Override
-	public void visit(LateralSubSelect arg0) {
-		isSimple = false;
-	}
-
-	@Override
-	public void visit(ValuesList arg0) {
-	}
-
-	@Override
-	public void visit(SetOperationList arg0) {
-		isSimple = false;
-	}
-
-	@Override
-	public void visit(WithItem arg0) {
-		isSimple = false;
-	}
-
-	public static class ColumnParser implements ExpressionVisitor {
-		private String columnName = null;
-		private boolean isSimple = true;
-
-		public boolean isSimple() {
-			return isSimple;
-		}
-
-		public String getColumnName() {
-			return columnName;
-		}
-		@Override
-		public void visit(NullValue arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Function arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(JdbcParameter arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(DoubleValue arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(LongValue arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(DateValue arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(TimeValue arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(TimestampValue arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Parenthesis arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(StringValue arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Addition arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Division arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Multiplication arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Subtraction arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(AndExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(OrExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Between arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(EqualsTo arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(GreaterThan arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(GreaterThanEquals arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(InExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(IsNullExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(LikeExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(MinorThan arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(MinorThanEquals arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(NotEqualsTo arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Column column) {
-			columnName = StringUtils.strip(column.getColumnName(), "`").toUpperCase();
-		}
-
-		@Override
-		public void visit(SubSelect arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(CaseExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(WhenClause arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(ExistsExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(AllComparisonExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(AnyComparisonExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Concat arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Matches arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(BitwiseAnd arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(BitwiseOr arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(BitwiseXor arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(JdbcNamedParameter arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(CastExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(Modulo arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(AnalyticExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(ExtractExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(IntervalExpression arg0) {
-			isSimple = false;
-		}
-
-		@Override
-		public void visit(SignedExpression arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(HexValue arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(WithinGroupExpression arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(OracleHierarchicalExpression arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(RegExpMatchOperator arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(JsonExpression arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(RegExpMySQLOperator arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(UserVariable arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(NumericBind arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(KeepExpression arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(MySQLGroupConcat arg0) {
-			isSimple = false;
-			
-		}
-
-		@Override
-		public void visit(RowConstructor arg0) {
-			isSimple = false;
-			
-		}
-	}
+        FromItemVisitor {
+    private String tableName;
+    private List<String> simpleColumnNames;
+    private Map<String, String> aliases;
+    private boolean isSimple = true;
+    private CCJSqlParserManager pm;
+
+    public ViewAnalyzer() {
+        pm = new CCJSqlParserManager();
+        simpleColumnNames = new ArrayList<String>();
+        aliases = new HashMap<String, String>();
+    }
+
+    public void parse(String sql) {
+        isSimple = true;
+        tableName = null;
+        try {
+            net.sf.jsqlparser.statement.Statement statement = pm
+                    .parse(new StringReader(sql));
+            if (statement instanceof Select) {
+                Select selectStatement = (Select) statement;
+                visit(selectStatement);
+            } else if (statement instanceof CreateView) {
+                CreateView createViewStatement = (CreateView) statement;
+                this.parse(createViewStatement.getSelectBody().toString());
+            }
+        } catch (JSQLParserException e) {
+            System.err.println("VIEW定義をパース出来ませんでした");
+        }
+    }
+
+    public boolean isSimple() {
+        return isSimple;
+    }
+
+    public String getTableName() {
+        // MySQLではバッククォートで囲まれるので取り除く
+        return StringUtils.strip(tableName, "`");
+    }
+
+    public String getAlias(String columnName) {
+        return aliases.get(columnName);
+    }
+    @SuppressWarnings("unchecked")
+    public List<String> getColumnNames() {
+        return UnmodifiableList.decorate(simpleColumnNames);
+    }
+    public void visit(Select select) {
+        select.getSelectBody().accept(this);
+    }
+
+    @Override
+    public void visit(Table table) {
+        tableName = table.getName();
+    }
+
+    @Override
+    public void visit(SubSelect subSelect) {
+        isSimple = false;
+    }
+
+    @Override
+    public void visit(SubJoin arg0) {
+        isSimple = false;
+    }
+
+    @Override
+    public void visit(AllColumns arg0) {
+    }
+
+    @Override
+    public void visit(AllTableColumns arg0) {
+    }
+
+    @Override
+    public void visit(SelectExpressionItem item) {
+        ColumnParser columnParser = new ColumnParser();
+        item.getExpression().accept(columnParser);
+        if (columnParser.isSimple()) {
+            String columnName = columnParser.getColumnName();
+            simpleColumnNames.add(columnName);
+            if(item.getAlias() != null){
+                aliases.put(columnName, StringUtils.strip(item.getAlias().getName(), "`").toUpperCase());
+            }
+        }
+    }
+
+    @Override
+    public void visit(PlainSelect select) {
+        if (!CollectionUtils.isEmpty(select.getGroupByColumnReferences())
+            || !CollectionUtils.isEmpty(select.getJoins())) {
+            isSimple = false;
+        } else {
+            select.getFromItem().accept(this);
+            for (SelectItem item : select.getSelectItems()) {
+                item.accept(this);
+            }
+        }
+    }
+
+    @Override
+    public void visit(LateralSubSelect arg0) {
+        isSimple = false;
+    }
+
+    @Override
+    public void visit(ValuesList arg0) {
+    }
+
+    @Override
+    public void visit(SetOperationList arg0) {
+        isSimple = false;
+    }
+
+    @Override
+    public void visit(WithItem arg0) {
+        isSimple = false;
+    }
+
+    public static class ColumnParser implements ExpressionVisitor {
+        private String columnName = null;
+        private boolean isSimple = true;
+
+        public boolean isSimple() {
+            return isSimple;
+        }
+
+        public String getColumnName() {
+            return columnName;
+        }
+        @Override
+        public void visit(NullValue arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Function arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(JdbcParameter arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(DoubleValue arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(LongValue arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(DateValue arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(TimeValue arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(TimestampValue arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Parenthesis arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(StringValue arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Addition arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Division arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Multiplication arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Subtraction arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(AndExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(OrExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Between arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(EqualsTo arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(GreaterThan arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(GreaterThanEquals arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(InExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(IsNullExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(LikeExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(MinorThan arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(MinorThanEquals arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(NotEqualsTo arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Column column) {
+            columnName = StringUtils.strip(column.getColumnName(), "`").toUpperCase();
+        }
+
+        @Override
+        public void visit(SubSelect arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(CaseExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(WhenClause arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(ExistsExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(AllComparisonExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(AnyComparisonExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Concat arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Matches arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(BitwiseAnd arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(BitwiseOr arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(BitwiseXor arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(JdbcNamedParameter arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(CastExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(Modulo arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(AnalyticExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(ExtractExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(IntervalExpression arg0) {
+            isSimple = false;
+        }
+
+        @Override
+        public void visit(SignedExpression arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(HexValue arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(WithinGroupExpression arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(OracleHierarchicalExpression arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(RegExpMatchOperator arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(JsonExpression arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(RegExpMySQLOperator arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(UserVariable arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(NumericBind arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(KeepExpression arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(MySQLGroupConcat arg0) {
+            isSimple = false;
+            
+        }
+
+        @Override
+        public void visit(RowConstructor arg0) {
+            isSimple = false;
+            
+        }
+    }
 }

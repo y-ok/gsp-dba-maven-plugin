@@ -26,7 +26,7 @@ import jp.co.tis.gsp.tools.dba.dialect.Dialect;
 import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 import jp.co.tis.gsp.tools.dba.dialect.param.ImportParams;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
@@ -50,7 +50,7 @@ import org.seasar.framework.util.JarFileUtil;
 @Mojo(name = "import-schema", requiresProject = true)
 public class ImportSchemaMojo extends AbstractDbaMojo {
     @Parameter(defaultValue = "target/dump")
-	protected File inputDirectory;
+    protected File inputDirectory;
 
     @Parameter(defaultValue = "${plugin}", readonly = true)
     private MavenProject project;
@@ -74,10 +74,10 @@ public class ImportSchemaMojo extends AbstractDbaMojo {
     final Charset UTF8 = Charset.forName("UTF-8");
 
     @Override
-	protected void executeMojoSpec() throws MojoExecutionException {
-		Dialect dialect = DialectFactory.getDialect(url, driver);
-		dialect.createUser(user, password, adminUser, adminPassword);
-		dialect.dropAll(user, password, adminUser, adminPassword, schema);
+    protected void executeMojoSpec() throws MojoExecutionException {
+        Dialect dialect = DialectFactory.getDialect(url, driver);
+        dialect.createUser(user, password, adminUser, adminPassword);
+        dialect.dropAll(user, password, adminUser, adminPassword, schema);
 
         Artifact artifact = repositorySystem.createArtifact(groupId, artifactId, version, "jar");
         ArtifactResolutionRequest schemaArtifactRequest = new ArtifactResolutionRequest()
@@ -97,14 +97,14 @@ public class ImportSchemaMojo extends AbstractDbaMojo {
 
         try {
             
-		    if(!inputDirectory.exists()) {
-		    	try {
-			    	FileUtils.forceMkdir(inputDirectory);
-    			} catch (IOException e) {
-	    			throw new MojoExecutionException("Can't create outputDirectory:" + inputDirectory);
-		    	}
-	    	}
-        	
+            if(!inputDirectory.exists()) {
+                try {
+                    FileUtils.forceMkdir(inputDirectory);
+                } catch (IOException e) {
+                    throw new MojoExecutionException("Can't create outputDirectory:" + inputDirectory);
+                }
+            }
+            
             // jarの解凍
             extractJarAll(jarFile, inputDirectory.getAbsolutePath());
             
@@ -112,31 +112,31 @@ public class ImportSchemaMojo extends AbstractDbaMojo {
             throw new MojoExecutionException("", e);
         }
 
-		getLog().info("スキーマのインポートを開始します。");
-		dialect.importSchema(params);
-		getLog().info("スキーマのインポートを終了しました");
-	}
+        getLog().info("スキーマのインポートを開始します。");
+        dialect.importSchema(params);
+        getLog().info("スキーマのインポートを終了しました");
+    }
     
-	private ImportParams createImportParams() {
+    private ImportParams createImportParams() {
         String importFilename = StringUtils.defaultIfEmpty(dmpFile, schema + ".dmp");
         File importFile = new File(inputDirectory, importFilename);
 
-	    ImportParams param = new ImportParams();
-	    
-	    param.setUser(user);
-	    param.setPassword(password);
-	    param.setAdminUser(adminUser);
-	    param.setAdminPassword(adminPassword);
-	    param.setSchema(schema);
-	    param.setDelimiter(delimiter);
-	    param.setCharset(UTF8);
-	    param.setOnError(onError);
-	    param.setInputDirectory(inputDirectory);
-	    param.setDumpFile(importFile);
-	    param.setLogger(getLog());
-	    
-	    return param;
-	}
+        ImportParams param = new ImportParams();
+        
+        param.setUser(user);
+        param.setPassword(password);
+        param.setAdminUser(adminUser);
+        param.setAdminPassword(adminPassword);
+        param.setSchema(schema);
+        param.setDelimiter(delimiter);
+        param.setCharset(UTF8);
+        param.setOnError(onError);
+        param.setInputDirectory(inputDirectory);
+        param.setDumpFile(importFile);
+        param.setLogger(getLog());
+        
+        return param;
+    }
 
     /**
      * 指定Jarファイルを指定ディレクトリに解凍します。
