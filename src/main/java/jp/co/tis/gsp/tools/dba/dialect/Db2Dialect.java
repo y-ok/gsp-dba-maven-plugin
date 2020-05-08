@@ -24,14 +24,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
+import jp.co.tis.gsp.tools.db.TypeMapper;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.StringUtils;
 import org.seasar.extension.jdbc.gen.dialect.GenDialectRegistry;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
 import org.seasar.framework.util.StatementUtil;
 
-import jp.co.tis.gsp.tools.db.TypeMapper;
+
 
 public class Db2Dialect extends Dialect {
     private static final List<String> USABLE_TYPE_NAMES = new ArrayList<String>();
@@ -76,26 +76,26 @@ public class Db2Dialect extends Dialect {
             conn = DriverManager.getConnection(url, adminUser, adminPassword);
             stmt = conn.createStatement();
             
-			// 指定スキーマがいなければ作成する。
+            // 指定スキーマがいなければ作成する。
             if(!existsSchema(conn, schema)) {
-            	createSchema(schema, user, password, adminUser, adminPassword);
+                createSchema(schema, user, password, adminUser, adminPassword);
                 return;
             } else {
-            	// 指定スキーマが存在する場合はスキーマ操作権限を念のため与えておく
-            	stmt.execute("GRANT CREATEIN,ALTERIN,DROPIN ON SCHEMA " + schema + " TO USER " + user);
+                // 指定スキーマが存在する場合はスキーマ操作権限を念のため与えておく
+                stmt.execute("GRANT CREATEIN,ALTERIN,DROPIN ON SCHEMA " + schema + " TO USER " + user);
             }
             
-			// スキーマ内のテーブル、ビュー、シーケンス削除
-			String nmzschema = normalizeSchemaName(schema);
-			String dropListSql = "SELECT TABNAME, CONSTNAME FROM SYSCAT.TABCONST WHERE TYPE='F' AND TABSCHEMA='" + nmzschema + "'";
-			dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.FK);
-			
-			dropListSql = "SELECT TABNAME FROM SYSCAT.TABLES WHERE OWNERTYPE='U' AND TYPE IN('V') AND TABSCHEMA='" + nmzschema + "'";
-			dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.VIEW);
-			
-			dropListSql = "SELECT TABNAME FROM SYSCAT.TABLES WHERE OWNERTYPE='U' AND TYPE IN('T') AND TABSCHEMA='" + nmzschema + "'";
-	        dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.TABLE);
-			
+            // スキーマ内のテーブル、ビュー、シーケンス削除
+            String nmzschema = normalizeSchemaName(schema);
+            String dropListSql = "SELECT TABNAME, CONSTNAME FROM SYSCAT.TABCONST WHERE TYPE='F' AND TABSCHEMA='" + nmzschema + "'";
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.FK);
+            
+            dropListSql = "SELECT TABNAME FROM SYSCAT.TABLES WHERE OWNERTYPE='U' AND TYPE IN('V') AND TABSCHEMA='" + nmzschema + "'";
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.VIEW);
+            
+            dropListSql = "SELECT TABNAME FROM SYSCAT.TABLES WHERE OWNERTYPE='U' AND TYPE IN('T') AND TABSCHEMA='" + nmzschema + "'";
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.TABLE);
+            
         } catch (SQLException e) {
             throw new MojoExecutionException("データ削除中にエラー", e);
         } finally {
@@ -143,55 +143,55 @@ public class Db2Dialect extends Dialect {
             ConnectionUtil.close(conn);
         }
     }
-	
-	@Override
+    
+    @Override
     protected void grantSchemaObjToUser(Connection conn, String grantListSql, String schema, String user, OBJECT_TYPE objType) throws SQLException {
-    	Statement stmt = null;
-    	ResultSet rs = null;
-    	
-    	try {
-    	  stmt = conn.createStatement();
-    	  rs = stmt.executeQuery(grantListSql);
-    	  String grantSql = "";
-    	  
-    	  while (rs.next()) {
-      	      switch (objType) {
-  		        case TABLE: // テーブル
-  		        	grantSql = "GRANT ALL ON "  + schema + "." + rs.getString(1) + " TO USER " + user;
-    		      break;
-  		        case VIEW: // ビュー
-  		        	grantSql = "GRANT ALL ON "  + schema + "." + rs.getString(1) + " TO USER " + user;
-  			      break;
-         		default:
-          		  break;
-  		      }
-      	    
-      	    stmt = conn.createStatement();
-      	    System.err.println(grantSql);
-      	    stmt.execute(grantSql);
-    	  }
+        Statement stmt = null;
+        ResultSet rs = null;
+        
+        try {
+          stmt = conn.createStatement();
+          rs = stmt.executeQuery(grantListSql);
+          String grantSql = "";
+          
+          while (rs.next()) {
+                switch (objType) {
+                  case TABLE: // テーブル
+                      grantSql = "GRANT ALL ON "  + schema + "." + rs.getString(1) + " TO USER " + user;
+                  break;
+                  case VIEW: // ビュー
+                      grantSql = "GRANT ALL ON "  + schema + "." + rs.getString(1) + " TO USER " + user;
+                    break;
+                 default:
+                    break;
+                }
+              
+              stmt = conn.createStatement();
+              System.err.println(grantSql);
+              stmt.execute(grantSql);
+          }
         } finally {
             StatementUtil.close(stmt);
         }
     }
 
     private void createSchema(String schema, String user, String password, String admin, String adminPassword) throws MojoExecutionException {
-    	PreparedStatement  userStmt = null;
+        PreparedStatement  userStmt = null;
         Statement createUserStmt = null;
         Connection conn = null;
-    	
+        
         try{
-			conn = DriverManager.getConnection(url, admin, adminPassword);
-			createUserStmt = conn.createStatement();
-			createUserStmt.execute("CREATE SCHEMA " + schema + " AUTHORIZATION " + user);
-		
-		} catch (SQLException e) {
-			throw new MojoExecutionException("CREATE SCHEMA実行中にエラー", e);
-		} finally {
-			StatementUtil.close(userStmt);
-			StatementUtil.close(createUserStmt);
-			ConnectionUtil.close(conn);
-		}
+            conn = DriverManager.getConnection(url, admin, adminPassword);
+            createUserStmt = conn.createStatement();
+            createUserStmt.execute("CREATE SCHEMA " + schema + " AUTHORIZATION " + user);
+        
+        } catch (SQLException e) {
+            throw new MojoExecutionException("CREATE SCHEMA実行中にエラー", e);
+        } finally {
+            StatementUtil.close(userStmt);
+            StatementUtil.close(createUserStmt);
+            ConnectionUtil.close(conn);
+        }
     }
 
     @Override
@@ -201,7 +201,7 @@ public class Db2Dialect extends Dialect {
     
     @Override
     public String normalizeUserName(String userName) {
-    	return StringUtils.upperCase(userName);
+        return StringUtils.upperCase(userName);
     }
     
     @Override

@@ -1,12 +1,12 @@
 package jp.co.tis.gsp.tools.db;
 
-import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.logging.Logger;
+import javax.sql.DataSource;
 
 /**
  * {@link DataSource}の簡易実装クラス。
@@ -37,32 +37,32 @@ public class DataSourceImpl implements DataSource {
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
+    public <T> T unwrap(Class<T> iface) {
         throw new UnsupportedOperationException("unwrap");
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) {
         return false;
     }
 
     @Override
-    public PrintWriter getLogWriter() throws SQLException {
+    public PrintWriter getLogWriter() throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException("getLogWriter");
     }
 
     @Override
-    public void setLogWriter(PrintWriter out) throws SQLException {
+    public void setLogWriter(PrintWriter out) throws SQLFeatureNotSupportedException {
         throw new SQLFeatureNotSupportedException("setLogWriter");
     }
 
     @Override
-    public void setLoginTimeout(int seconds) throws SQLException {
+    public void setLoginTimeout(int seconds) {
         DriverManager.setLoginTimeout(seconds);
     }
 
     @Override
-    public int getLoginTimeout() throws SQLException {
+    public int getLoginTimeout() {
         return DriverManager.getLoginTimeout();
     }
 

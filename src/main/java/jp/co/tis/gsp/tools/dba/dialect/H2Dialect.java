@@ -6,16 +6,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import jp.co.tis.gsp.tools.db.TypeMapper;
+import jp.co.tis.gsp.tools.dba.dialect.param.ExportParams;
+import jp.co.tis.gsp.tools.dba.dialect.param.ImportParams;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.seasar.extension.jdbc.gen.dialect.GenDialectRegistry;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
 import org.seasar.framework.util.StatementUtil;
 
-import jp.co.tis.gsp.tools.db.TypeMapper;
-import jp.co.tis.gsp.tools.dba.dialect.param.ExportParams;
-import jp.co.tis.gsp.tools.dba.dialect.param.ImportParams;
+
 
 public class H2Dialect extends Dialect {
     
@@ -34,8 +34,8 @@ public class H2Dialect extends Dialect {
         Connection conn = null;
         try {
             File dumpFile = params.getDumpFile();
-		    String user = params.getUser();
-		    String password = params.getPassword();
+            String user = params.getUser();
+            String password = params.getPassword();
 
             conn = DriverManager.getConnection(url, user, password);
             Statement stmt = conn.createStatement();
@@ -59,19 +59,19 @@ public class H2Dialect extends Dialect {
         PreparedStatement pstmt = null;
         
         try {
-        	conn = DriverManager.getConnection(url, adminUser, adminPassword);
-        	
-			// スキーマ内のテーブル、ビュー、シーケンス削除
-			String nmzschema = normalizeSchemaName(schema);
-			String dropListSql = "SELECT TABLE_NAME, CONSTRAINT_NAME FROM INFORMATION_SCHEMA.CONSTRAINTS WHERE CONSTRAINT_SCHEMA='" + nmzschema + "'";
-			dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.FK);
-			
-			dropListSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA='" + nmzschema + "'"; 
-			dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.VIEW);
-			
-			dropListSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='" + nmzschema + "'"; 
-	        dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.TABLE);
-			
+            conn = DriverManager.getConnection(url, adminUser, adminPassword);
+            
+            // スキーマ内のテーブル、ビュー、シーケンス削除
+            String nmzschema = normalizeSchemaName(schema);
+            String dropListSql = "SELECT TABLE_NAME, CONSTRAINT_NAME FROM INFORMATION_SCHEMA.CONSTRAINTS WHERE CONSTRAINT_SCHEMA='" + nmzschema + "'";
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.FK);
+            
+            dropListSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_SCHEMA='" + nmzschema + "'"; 
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.VIEW);
+            
+            dropListSql = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='" + nmzschema + "'"; 
+            dropObjectsInSchema(conn, dropListSql, nmzschema, OBJECT_TYPE.TABLE);
+            
         } catch (SQLException e) {
             throw new MojoExecutionException("DROP ALL実行中にエラー", e);
         } finally {
@@ -82,24 +82,25 @@ public class H2Dialect extends Dialect {
     
     @Override
     public String normalizeUserName(String userName) {
-    	return StringUtils.upperCase(userName);
+        return StringUtils.upperCase(userName);
     }
-        
-	public String normalizeSchemaName(String schemaName) {
-		return StringUtils.upperCase(schemaName);
-	}
+
+    @Override
+    public String normalizeSchemaName(String schemaName) {
+        return StringUtils.upperCase(schemaName);
+    }
 
     @Override
     public void importSchema(ImportParams params) throws MojoExecutionException {
         Connection conn = null;
         try {
             File dumpFile = params.getDumpFile();
-			
-		    if (!dumpFile.exists())
-		        throw new MojoExecutionException(dumpFile.getName() + " is not found?");
-		    
-		    String user = params.getAdminUser();
-		    String password = params.getAdminPassword();
+            
+            if (!dumpFile.exists())
+                throw new MojoExecutionException(dumpFile.getName() + " is not found?");
+            
+            String user = params.getAdminUser();
+            String password = params.getAdminPassword();
 
             conn = DriverManager.getConnection(url, user, password);
             Statement stmt = conn.createStatement();

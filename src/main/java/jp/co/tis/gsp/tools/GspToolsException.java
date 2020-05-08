@@ -17,9 +17,9 @@
 package jp.co.tis.gsp.tools;
 
 public class GspToolsException extends RuntimeException {
-	private static final long serialVersionUID = 8374852081987357545L;
+    private static final long serialVersionUID = 8374852081987357545L;
 
-	public GspToolsException(String name) {
-		super(name);
-	}
+    public GspToolsException(String name) {
+        super(name);
+    }
 }

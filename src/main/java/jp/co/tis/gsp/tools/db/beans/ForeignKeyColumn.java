@@ -21,25 +21,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="FK")
 public class ForeignKeyColumn {
-	private Integer relationId;
+    private Integer relationId;
 
-	private Integer columnId;
+    private Integer columnId;
 
-	@XmlAttribute(name="RELATION")
-	public Integer getRelationId() {
-		return relationId;
-	}
+    @XmlAttribute(name="RELATION")
+    public Integer getRelationId() {
+        return relationId;
+    }
 
-	public void setRelationId(Integer relationId) {
-		this.relationId = relationId;
-	}
+    public void setRelationId(Integer relationId) {
+        this.relationId = relationId;
+    }
 
-	@XmlAttribute(name="ATTR")
-	public Integer getColumnId() {
-		return columnId;
-	}
+    @XmlAttribute(name="ATTR")
+    public Integer getColumnId() {
+        return columnId;
+    }
 
-	public void setColumnId(Integer columnId) {
-		this.columnId = columnId;
-	}
+    public void setColumnId(Integer columnId) {
+        this.columnId = columnId;
+    }
 }

@@ -16,6 +16,10 @@
 
 package jp.co.tis.gsp.tools.dba.mojo;
 
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -26,18 +30,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import jp.co.tis.gsp.tools.db.beans.Erd;
 import jp.co.tis.gsp.tools.dba.dialect.Dialect;
 import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 import jp.co.tis.gsp.tools.dba.s2jdbc.gen.DomaGspFactoryImpl;
 import jp.co.tis.gsp.tools.dba.s2jdbc.gen.GspFactoryImpl;
 import jp.co.tis.gsp.tools.dba.util.DialectUtil;
-
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.seasar.extension.jdbc.gen.command.CommandInvoker;
@@ -45,10 +46,8 @@ import org.seasar.extension.jdbc.gen.internal.command.CommandInvokerImpl;
 import org.seasar.extension.jdbc.gen.internal.util.ReflectUtil;
 import org.seasar.framework.util.StringUtil;
 
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+
+
 
 /**
  * generate-entity.
@@ -146,7 +145,7 @@ public class GenerateEntity extends AbstractDbaMojo {
      * Entityプロジェクトにはdiconがないので、自動生成する。
      */
     @Override
-	protected void executeMojoSpec() throws MojoExecutionException, MojoFailureException {
+    protected void executeMojoSpec() throws MojoExecutionException {
         Configuration fmConfig = new Configuration();
         fmConfig.setTemplateLoader(new ClassTemplateLoader(Erd.class, "/jp/co/tis/gsp/tools/dba/template/dicon"));
         

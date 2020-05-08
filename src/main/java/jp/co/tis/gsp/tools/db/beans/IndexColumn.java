@@ -22,14 +22,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="COLUMN")
 public class IndexColumn {
-	private Integer id;
+    private Integer id;
 
-	@XmlAttribute(name="ID")
-	public Integer getId() {
-		return id;
-	}
+    @XmlAttribute(name="ID")
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 }

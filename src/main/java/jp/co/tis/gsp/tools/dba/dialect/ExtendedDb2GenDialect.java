@@ -28,7 +28,7 @@ import org.seasar.extension.jdbc.gen.internal.dialect.Db2GenDialect;
  * @author Naoki Yamamoto
  */
 public class ExtendedDb2GenDialect extends Db2GenDialect {
-	
+    
     public ExtendedDb2GenDialect() {
         super();
         columnTypeMap.put("date", ExtendedDb2ColumnType.DATE);
@@ -40,7 +40,7 @@ public class ExtendedDb2GenDialect extends Db2GenDialect {
             public Class<?> getAttributeClass(int length, int precision,
                                               int scale) {
                 
-            	if (scale == 0 && precision == 1) {
+                if (scale == 0 && precision == 1) {
                     return boolean.class;
                 }
                 

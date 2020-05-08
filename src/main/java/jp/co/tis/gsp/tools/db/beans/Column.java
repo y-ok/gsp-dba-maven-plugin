@@ -18,13 +18,13 @@ package jp.co.tis.gsp.tools.db.beans;
 
 import java.util.Arrays;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import org.apache.commons.lang3.StringUtils;
 
-import org.apache.commons.lang.StringUtils;
+
 
 @XmlRootElement(name="ATTR")
 public class Column {

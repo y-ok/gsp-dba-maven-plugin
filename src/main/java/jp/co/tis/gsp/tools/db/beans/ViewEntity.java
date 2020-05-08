@@ -21,36 +21,36 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name="ENTITY")
 public class ViewEntity {
-	private Integer id;
-	
-	private String sql;
-	
-	private String alias;
+    private Integer id;
+    
+    private String sql;
+    
+    private String alias;
 
-	@XmlAttribute(name="ID")
-	public Integer getId() {
-		return id;
-	}
+    @XmlAttribute(name="ID")
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@XmlAttribute(name="SQL")
-	public String getSql() {
-		return sql;
-	}
+    @XmlAttribute(name="SQL")
+    public String getSql() {
+        return sql;
+    }
 
-	public void setSql(String sql) {
-		this.sql = sql;
-	}
+    public void setSql(String sql) {
+        this.sql = sql;
+    }
 
-	@XmlAttribute(name="ALIAS")
-	public String getAlias() {
-		return alias;
-	}
+    @XmlAttribute(name="ALIAS")
+    public String getAlias() {
+        return alias;
+    }
 
-	public void setAlias(String alias) {
-		this.alias = alias;
-	}
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
 }

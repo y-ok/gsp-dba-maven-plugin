@@ -1,10 +1,10 @@
 package jp.co.tis.gsp.tools.dba.dialect;
 
 import java.sql.Timestamp;
-
 import javax.persistence.TemporalType;
-
 import org.seasar.extension.jdbc.gen.internal.dialect.H2GenDialect;
+
+
 
 /**
  * @author Masaya Seko

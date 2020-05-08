@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import jp.co.tis.gsp.tools.db.EntityDependencyParser;
 import jp.co.tis.gsp.tools.db.TypeMapper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.seasar.extension.jdbc.gen.dialect.GenDialectRegistry;
 import org.seasar.extension.jdbc.util.ConnectionUtil;

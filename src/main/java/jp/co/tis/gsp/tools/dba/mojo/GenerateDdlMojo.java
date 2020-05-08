@@ -24,7 +24,6 @@ import jp.co.tis.gsp.tools.dba.dialect.Dialect;
 import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
@@ -40,17 +39,17 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "generate-ddl")
 public class GenerateDdlMojo extends AbstractDbaMojo {
 
-	/**
+    /**
      * ERD file.
-	 */
+     */
     @Parameter(property = "gsp-dba.erdFile", required = true)
-	protected File erdFile;
+    protected File erdFile;
 
-	/**
-	 * output directory.
-	 */
+    /**
+     * output directory.
+     */
     @Parameter(defaultValue = "target/ddl")
-	protected File outputDirectory;
+    protected File outputDirectory;
 
     @Parameter(defaultValue = "BYTE")
     protected LengthSemantics lengthSemantics;
@@ -67,30 +66,30 @@ public class GenerateDdlMojo extends AbstractDbaMojo {
      * @throws MojoExecutionException 例外
      * @throws MojoFailureException 例外
      */
-	@Override
-	protected void executeMojoSpec() throws MojoExecutionException, MojoFailureException {
-		if(outputDirectory.exists()) {
-			try {
-				FileUtils.cleanDirectory(outputDirectory);
-			} catch (IOException e) {
-				throw new MojoExecutionException("Can't clean outputDirectory:" + outputDirectory);
-			}
-		} else {
-			try {
-				FileUtils.forceMkdir(outputDirectory);
-			} catch (IOException e) {
-				throw new MojoExecutionException("Can't create outputDirectory:" + outputDirectory);
-			}
-		}
+    @Override
+    protected void executeMojoSpec() throws MojoExecutionException {
+        if(outputDirectory.exists()) {
+            try {
+                FileUtils.cleanDirectory(outputDirectory);
+            } catch (IOException e) {
+                throw new MojoExecutionException("Can't clean outputDirectory:" + outputDirectory);
+            }
+        } else {
+            try {
+                FileUtils.forceMkdir(outputDirectory);
+            } catch (IOException e) {
+                throw new MojoExecutionException("Can't create outputDirectory:" + outputDirectory);
+            }
+        }
 
-		ObjectBrowserErParser parser = new ObjectBrowserErParser();
-		parser.setOutputDirectory(outputDirectory);
-		parser.setSchema(schema);
-		parser.setUrl(url);
-		parser.setUser(user);
-		parser.setDdlTemplateFileDir(ddlTemplateFileDir);
-		Dialect dialect = DialectFactory.getDialect(url, driver);
-		parser.setTypeMapper(dialect.getTypeMapper());
+        ObjectBrowserErParser parser = new ObjectBrowserErParser();
+        parser.setOutputDirectory(outputDirectory);
+        parser.setSchema(schema);
+        parser.setUrl(url);
+        parser.setUser(user);
+        parser.setDdlTemplateFileDir(ddlTemplateFileDir);
+        Dialect dialect = DialectFactory.getDialect(url, driver);
+        parser.setTypeMapper(dialect.getTypeMapper());
 
         parser.setPrintTable(dialect.canPrintTable());
         parser.setPrintIndex(dialect.canPrintIndex());
@@ -98,11 +97,11 @@ public class GenerateDdlMojo extends AbstractDbaMojo {
         parser.setPrintView(dialect.canPrintView());
         parser.setLengthSemantics(lengthSemantics);
         parser.setAllocationSize(allocationSize);;
-		try {
-			parser.parse(erdFile);
-		} catch (Exception e) {
-			throw new MojoExecutionException("DDL generate", e);
-		}
-	}
+        try {
+            parser.parse(erdFile);
+        } catch (Exception e) {
+            throw new MojoExecutionException("DDL generate", e);
+        }
+    }
 
 }

@@ -22,8 +22,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.seasar.extension.jdbc.gen.command.CommandInvoker;
 import org.seasar.extension.jdbc.gen.internal.command.CommandInvokerImpl;
 import org.seasar.extension.jdbc.gen.internal.command.GenerateNamesCommand;
@@ -38,108 +36,108 @@ import org.seasar.extension.jdbc.gen.internal.util.ReflectUtil;
 *
 */
 public class GenerateService extends AbstractDbaMojo {
-	/**
-	 * @parameter default-value="target/classes"
-	 */
-	public File diconDir;
+    /**
+     * @parameter default-value="target/classes"
+     */
+    public File diconDir;
 
-	/**
-	 * @parameter
-	 * @required
-	 */
-	protected String rootPackage;
+    /**
+     * @parameter
+     * @required
+     */
+    protected String rootPackage;
 
-	/**
-	 * @parameter default-value="entity"
-	 */
-	protected String entityPackageName;
+    /**
+     * @parameter default-value="entity"
+     */
+    protected String entityPackageName;
 
-	/**
-	 * @parameter default-value="service"
-	 */
-	protected String servicePackageName;
+    /**
+     * @parameter default-value="service"
+     */
+    protected String servicePackageName;
 
-	/**
-	 * @parameter default-value="entity.names"
-	 */
-	protected String namesPackageName;
+    /**
+     * @parameter default-value="entity.names"
+     */
+    protected String namesPackageName;
 
-	/**
-	 * @parameter default-value=""
-	 */
-	protected String ignoreEntityClassNamePattern;
+    /**
+     * @parameter default-value=""
+     */
+    protected String ignoreEntityClassNamePattern;
 
-	@Override
-	protected void executeMojoSpec() throws MojoExecutionException, MojoFailureException {
-		if (ignoreEntityClassNamePattern == null)
-			ignoreEntityClassNamePattern = "";
-		executeGenerateNames();
-		executeGenerateService();
-	}
+    @Override
+    protected void executeMojoSpec() {
+        if (ignoreEntityClassNamePattern == null)
+            ignoreEntityClassNamePattern = "";
+        executeGenerateNames();
+        executeGenerateService();
+    }
 
     
-	private void executeGenerateService() {
+    private void executeGenerateService() {
         final GenerateServiceCommand command = new GenerateServiceCommand();
-		command.setClasspathDir(diconDir);
-		command.setNamesPackageName(namesPackageName);
-		command.setEntityPackageName(entityPackageName);
-		command.setServicePackageName(servicePackageName);
-		command.setIgnoreEntityClassNamePattern(ignoreEntityClassNamePattern);
+        command.setClasspathDir(diconDir);
+        command.setNamesPackageName(namesPackageName);
+        command.setEntityPackageName(entityPackageName);
+        command.setServicePackageName(servicePackageName);
+        command.setIgnoreEntityClassNamePattern(ignoreEntityClassNamePattern);
 
-		final List<URL> urlList = new ArrayList<URL>();
-		try {
-			urlList.add(diconDir.toURI().toURL());
-		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException(e);
-		}
+        final List<URL> urlList = new ArrayList<URL>();
+        try {
+            urlList.add(diconDir.toURI().toURL());
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
 
-		final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-		final URLClassLoader newLoader = new URLClassLoader(urlList.toArray(new URL[] {}),
-				oldLoader);
-		try {
-			Thread.currentThread().setContextClassLoader(newLoader);
+        final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        final URLClassLoader newLoader = new URLClassLoader(urlList.toArray(new URL[] {}),
+                oldLoader);
+        try {
+            Thread.currentThread().setContextClassLoader(newLoader);
 
-			command.setRootPackageName(rootPackage);
+            command.setRootPackageName(rootPackage);
 
-			final CommandInvoker invoker = ReflectUtil.newInstance(CommandInvoker.class,
-					CommandInvokerImpl.class.getName());
-			invoker.invoke(command);
-		} finally {
-			Thread.currentThread().setContextClassLoader(oldLoader);
-		}
-	}
+            final CommandInvoker invoker = ReflectUtil.newInstance(CommandInvoker.class,
+                    CommandInvokerImpl.class.getName());
+            invoker.invoke(command);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldLoader);
+        }
+    }
 
-	private void executeGenerateNames() {
-		final GenerateNamesCommand command = new GenerateNamesCommand();
-		command.setNamesPackageName(namesPackageName);
-		command.setEntityPackageName(entityPackageName);
-		command.setOverwrite(true);
-		command.setClasspathDir(diconDir);
-		command.setNamesTemplateFileName("java/gsp_names.ftl");
-		command.setNamesAggregateTemplateFileName("java/gsp_names_aggregate.ftl");
-		command.setIgnoreEntityClassNamePattern(ignoreEntityClassNamePattern);
+    private void executeGenerateNames() {
+        final GenerateNamesCommand command = new GenerateNamesCommand();
+        command.setNamesPackageName(namesPackageName);
+        command.setEntityPackageName(entityPackageName);
+        command.setOverwrite(true);
+        command.setClasspathDir(diconDir);
+        command.setNamesTemplateFileName("java/gsp_names.ftl");
+        command.setNamesAggregateTemplateFileName("java/gsp_names_aggregate.ftl");
+        command.setIgnoreEntityClassNamePattern(ignoreEntityClassNamePattern);
 
-		final List<URL> urlList = new ArrayList<URL>();
-		try {
-			urlList.add(diconDir.toURI().toURL());
-		} catch (MalformedURLException e) {
-			throw new IllegalArgumentException(e);
-		}
+        final List<URL> urlList = new ArrayList<URL>();
+        try {
+            urlList.add(diconDir.toURI().toURL());
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
+        }
 
-		final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-		final URLClassLoader newLoader = new URLClassLoader(urlList.toArray(new URL[] {}),
-				oldLoader);
-		try {
-			Thread.currentThread().setContextClassLoader(newLoader);
+        final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
+        final URLClassLoader newLoader = new URLClassLoader(urlList.toArray(new URL[] {}),
+                oldLoader);
+        try {
+            Thread.currentThread().setContextClassLoader(newLoader);
 
-			command.setRootPackageName(rootPackage);
+            command.setRootPackageName(rootPackage);
 
-			final CommandInvoker invoker = ReflectUtil.newInstance(CommandInvoker.class,
-					CommandInvokerImpl.class.getName());
-			invoker.invoke(command);
-		} finally {
-			Thread.currentThread().setContextClassLoader(oldLoader);
-		}
-	}
+            final CommandInvoker invoker = ReflectUtil.newInstance(CommandInvoker.class,
+                    CommandInvokerImpl.class.getName());
+            invoker.invoke(command);
+        } finally {
+            Thread.currentThread().setContextClassLoader(oldLoader);
+        }
+    }
 
 }

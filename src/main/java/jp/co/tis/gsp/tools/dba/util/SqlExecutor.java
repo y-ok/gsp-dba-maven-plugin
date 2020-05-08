@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.codehaus.mojo.sql.SqlSplitter;
@@ -23,7 +22,6 @@ import org.seasar.extension.jdbc.util.ConnectionUtil;
 import org.seasar.framework.util.StatementUtil;
 
 public class SqlExecutor {
-
     private Connection conn;
 
     private String url;
@@ -41,8 +39,8 @@ public class SqlExecutor {
 
     private Log logger;
 
-    public SqlExecutor(String url, String user, String password, File ddlDirectory, File extraDdlDirectory,
-            String delimiter, String onError, Log logger) {
+    public SqlExecutor(String url, String user, String password, File ddlDirectory,
+            File extraDdlDirectory, String delimiter, String onError, Log logger) {
         this.url = url;
         this.user = user;
         this.password = password;
@@ -63,7 +61,8 @@ public class SqlExecutor {
         };
 
         // 拡張子.sqlが実行対象
-        List<File> files = new ArrayList<File>(Arrays.asList(ddlDirectory.listFiles(sqlFileFilter)));
+        List<File> files =
+                new ArrayList<File>(Arrays.asList(ddlDirectory.listFiles(sqlFileFilter)));
         if (extraDdlDirectory != null && extraDdlDirectory.isDirectory()) {
             Collections.addAll(files, extraDdlDirectory.listFiles(sqlFileFilter));
         }
@@ -133,7 +132,7 @@ public class SqlExecutor {
 
         successfulStatements = 0;
         totalStatements = 0;
-        
+
         for (File sqlFile : sqlFiles) {
             Reader reader = null;
             try {
@@ -151,7 +150,7 @@ public class SqlExecutor {
                 IOUtils.closeQuietly(reader);
             }
         }
-        logger.info(successfulStatements + " of " + totalStatements + " SQL statements executed successfully");
+        logger.info(successfulStatements + " of " + totalStatements
+                + " SQL statements executed successfully");
     }
-
 }

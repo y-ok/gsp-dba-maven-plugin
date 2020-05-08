@@ -27,103 +27,103 @@ import javax.xml.bind.annotation.XmlTransient;
 
 @XmlRootElement(name="INDEX")
 public class Index {
-	private Integer id;
+    private Integer id;
 
-	/** 論理名 */
-	private String label;
+    /** 論理名 */
+    private String label;
 
-	/** 物理名 */
-	private String name;
+    /** 物理名 */
+    private String name;
 
-	/** カラム */
-	private List<IndexColumn> indexColumnList;
+    /** カラム */
+    private List<IndexColumn> indexColumnList;
 
-	/** 正規のカラム */
-	private List<Column> columnList;
-	
-	/** インデックスの種別 */
-	private Integer type;
+    /** 正規のカラム */
+    private List<Column> columnList;
+    
+    /** インデックスの種別 */
+    private Integer type;
 
-	/** インデックスの持ち主のエンティティ */
-	private Entity entity;
+    /** インデックスの持ち主のエンティティ */
+    private Entity entity;
 
-	@XmlAttribute(name="ID")
-	public Integer getId() {
-		return id;
-	}
+    @XmlAttribute(name="ID")
+    public Integer getId() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@XmlAttribute(name="L-NAME")
-	public String getLabel() {
-		return label;
-	}
+    @XmlAttribute(name="L-NAME")
+    public String getLabel() {
+        return label;
+    }
 
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    public void setLabel(String label) {
+        this.label = label;
+    }
 
-	@XmlAttribute(name="P-NAME")
-	public String getName() {
-		return name;
-	}
+    @XmlAttribute(name="P-NAME")
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	@XmlElementRef(name="COLUMN")
-	public List<IndexColumn> getIndexColumnList() {
-		return indexColumnList;
-	}
+    @XmlElementRef(name="COLUMN")
+    public List<IndexColumn> getIndexColumnList() {
+        return indexColumnList;
+    }
 
-	public void setIndexColumnList(List<IndexColumn> indexColumnList) {
-		this.indexColumnList = indexColumnList;
-	}
+    public void setIndexColumnList(List<IndexColumn> indexColumnList) {
+        this.indexColumnList = indexColumnList;
+    }
 
-	@XmlAttribute(name="I-TYPE")
-	public Integer getType() {
-		return type;
-	}
+    @XmlAttribute(name="I-TYPE")
+    public Integer getType() {
+        return type;
+    }
 
-	public void setType(Integer type) {
-		this.type = type;
-	}
+    public void setType(Integer type) {
+        this.type = type;
+    }
 
-	@XmlTransient
-	public List<Column> getColumnList() {
-		if(columnList != null) {
-			return columnList;
-		}
-		if(indexColumnList == null) {
-			return null;
-		}
-		columnList = new ArrayList<Column>();
-		for(IndexColumn indexColumn : indexColumnList) {
-			columnList.add(entity.getColumn(indexColumn.getId()));
-		}
+    @XmlTransient
+    public List<Column> getColumnList() {
+        if(columnList != null) {
+            return columnList;
+        }
+        if(indexColumnList == null) {
+            return null;
+        }
+        columnList = new ArrayList<Column>();
+        for(IndexColumn indexColumn : indexColumnList) {
+            columnList.add(entity.getColumn(indexColumn.getId()));
+        }
 
-		return columnList;
-	}
+        return columnList;
+    }
 
-	@XmlTransient
-	public Entity getEntity() {
-		return entity;
-	}
+    @XmlTransient
+    public Entity getEntity() {
+        return entity;
+    }
 
-	public void setEntity(Entity entity) {
-		this.entity = entity;
-	}
+    public void setEntity(Entity entity) {
+        this.entity = entity;
+    }
 
-	public Boolean isPrimaryKey() {
-		return type == 0;
-	}
+    public Boolean isPrimaryKey() {
+        return type == 0;
+    }
 
-	public Column getFirstColumn() {
-		if (columnList == null)
-			return null;
-		return columnList.get(0);
-	}
+    public Column getFirstColumn() {
+        if (columnList == null)
+            return null;
+        return columnList.get(0);
+    }
 }

@@ -16,9 +16,9 @@
 
 package jp.co.tis.gsp.tools.dba.s2jdbc.gen;
 
+import java.io.File;
 import javax.persistence.GenerationType;
 import javax.sql.DataSource;
-
 import jp.co.tis.gsp.tools.dba.mojo.ExtendedGenerateEntityCommand;
 import org.seasar.extension.jdbc.gen.command.Command;
 import org.seasar.extension.jdbc.gen.desc.AttributeDescFactory;
@@ -38,10 +38,10 @@ import org.seasar.extension.jdbc.gen.meta.DbTableMetaReader;
 import org.seasar.extension.jdbc.gen.model.EntityModelFactory;
 import org.seasar.framework.convention.PersistenceConvention;
 
-import java.io.File;
+
 
 public class GspFactoryImpl extends FactoryImpl {
-	@Override
+    @Override
     public DbTableMetaReader createDbTableMetaReader(Command command,
             DataSource dataSource, GenDialect dialect, String schemaName,
             String tableNamePattern, String ignoreTableNamePattern,
