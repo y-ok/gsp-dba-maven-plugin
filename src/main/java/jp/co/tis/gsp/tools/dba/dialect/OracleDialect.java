@@ -42,7 +42,6 @@ import org.seasar.extension.jdbc.gen.dialect.GenDialectRegistry;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
 import org.seasar.framework.util.StatementUtil;
 import org.seasar.framework.util.tiger.Maps;
-import org.sonatype.guice.bean.scanners.asm.Type;
 
 
 
@@ -52,7 +51,6 @@ public class OracleDialect extends Dialect {
     private static final List<String> USABLE_TYPE_NAMES = new ArrayList<String>();
 
     static {
-        USABLE_TYPE_NAMES.add("BINARY_FLOAT");
         USABLE_TYPE_NAMES.add("CHAR");
         USABLE_TYPE_NAMES.add("DATE");
         USABLE_TYPE_NAMES.add("LONG");
@@ -67,8 +65,7 @@ public class OracleDialect extends Dialect {
             .$(Types.BLOB, "BLOB").$(Types.BOOLEAN, "NUMBER(1,0)").$(Types.CHAR, "CHAR")
             .$(Types.CLOB, "CLOB").$(Types.DATE, "DATE").$(Types.DECIMAL, "NUMBER")
             .$(Types.DOUBLE, "DOUBLE").$(Types.FLOAT, "FLOAT").$(Types.INTEGER, "NUMBER(9,0)")
-            .$(Type.FLOAT, "BINARY_FLOAT(32,0)").$(Types.TIMESTAMP, "TIMESTAMP")
-            .$(Types.VARCHAR, "VARCHAR2").$();
+            .$(Types.TIMESTAMP, "TIMESTAMP").$(Types.VARCHAR, "VARCHAR2").$();
 
     public OracleDialect() {
         GenDialectRegistry.deregister(org.seasar.extension.jdbc.dialect.OracleDialect.class);

@@ -1,17 +1,15 @@
 /*
  * Copyright (C) 2015 coastland
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package jp.co.tis.gsp.tools.dba.dialect;
@@ -49,91 +47,93 @@ import jp.co.tis.gsp.tools.dba.util.CsvLoader;
 import jp.co.tis.gsp.tools.dba.util.SqlExecutor;
 
 public abstract class Dialect {
-	
-	protected enum OBJECT_TYPE {
-		FK, TABLE, VIEW, SEQUENCE;
-	}
 
-	protected DatabaseMetaData metaData = null;
-	public static final int UN_USABLE_TYPE = -999;
-	
+    protected enum OBJECT_TYPE {
+        FK, TABLE, VIEW, SEQUENCE;
+    }
+
+    protected DatabaseMetaData metaData = null;
+    public static final int UN_USABLE_TYPE = -999;
+
 
     protected final Charset UTF8 = Charset.forName("UTF-8");
-    
+
     /*** jar内のディレクトリ構造 **/
     protected final String DDL_DIR_NAME = "ddlDirectory";
     protected final String EXTRADDL_DIR_NAME = "extraDdlDirecotry";
     protected final String DATA_DIR_NAME = "dataDirectory";
-    
-	public void exportSchema(ExportParams params) throws MojoExecutionException {
-	    exportSchemaGeneral(params);
-	}
-	
-	protected void exportSchemaGeneral(ExportParams params) throws MojoExecutionException {
-       // CSVデータ出力
-	    try {
-	        File dataDir = new File(params.getOutputDirectory(), DATA_DIR_NAME);
-	        FileUtils.forceMkdir(dataDir);
-	        
-	        CsvExporter exporter = new CsvExporter(url, driver, params.getSchema(), params.getAdminUser(), 
-	                params.getAdminPassword(), dataDir, UTF8);
-	        
+
+    public void exportSchema(ExportParams params) throws MojoExecutionException {
+        exportSchemaGeneral(params);
+    }
+
+    protected void exportSchemaGeneral(ExportParams params) throws MojoExecutionException {
+        // CSVデータ出力
+        try {
+            File dataDir = new File(params.getOutputDirectory(), DATA_DIR_NAME);
+            FileUtils.forceMkdir(dataDir);
+
+            CsvExporter exporter = new CsvExporter(url, driver, params.getSchema(),
+                    params.getAdminUser(), params.getAdminPassword(), dataDir, UTF8);
+
             exporter.execute();
         } catch (Exception e1) {
             throw new MojoExecutionException("CSVデータ出力処理でエラーが発生しました:", e1);
         }
-        
+
         // DDL & extraDDLの収集
         try {
             File ddlDir = params.getDdlDirectory();
             File extraDdlDir = params.getExtraDdlDirectory();
-           
+
             // 少なくとも ddlDirectoryの指定は必要。
-            if(ddlDir != null && ddlDir.exists()) {
-                FileUtils.copyDirectory(params.getDdlDirectory(), new File(params.getOutputDirectory(), DDL_DIR_NAME));
+            if (ddlDir != null && ddlDir.exists()) {
+                FileUtils.copyDirectory(params.getDdlDirectory(),
+                        new File(params.getOutputDirectory(), DDL_DIR_NAME));
             } else {
                 throw new MojoExecutionException("DDLディレクトリの指定が誤っています");
             }
 
             // 追加ディレクトリの指定がある場合
-            if(extraDdlDir != null) {
-                if(!extraDdlDir.exists())
+            if (extraDdlDir != null) {
+                if (!extraDdlDir.exists())
                     throw new MojoExecutionException("extraDDLディレクトリの指定が誤っています");
-                    
-                FileUtils.copyDirectory(params.getExtraDdlDirectory(), new File(params.getOutputDirectory(), EXTRADDL_DIR_NAME));
+
+                FileUtils.copyDirectory(params.getExtraDdlDirectory(),
+                        new File(params.getOutputDirectory(), EXTRADDL_DIR_NAME));
             }
 
         } catch (IOException e) {
             throw new MojoExecutionException("DDLとデータファイルのコピーに失敗しました:", e);
         }
-	}
-	
-	/**
-	 * 指定したスキーマ内の全テーブル・ビュー・シーケンスを削除します。
-	 * 
-	 * 指定したスキーマが存在しない場合はスキーマを作成します。
-	 * 
-	 * @param user ユーザ名
-	 * @param password パスワード
-	 * @param adminUser 管理者ユーザ
-	 * @param adminPassword 管理者パスワード
-	 * @param schema スキーマ
-	 * @throws MojoExecutionException 例外
-	 */
-	public abstract void dropAll(String user, String password, String adminUser,
-			String adminPassword, String schema) throws MojoExecutionException;
+    }
 
-	public void importSchema(ImportParams params) throws MojoExecutionException {
-	    importSchemaGeneral(params);
-	}
-	
-	protected void importSchemaGeneral(ImportParams params) throws MojoExecutionException {
-	    
-	    File inputDir = params.getInputDirectory();
-	    
+    /**
+     * 指定したスキーマ内の全テーブル・ビュー・シーケンスを削除します。
+     * 
+     * 指定したスキーマが存在しない場合はスキーマを作成します。
+     * 
+     * @param user          ユーザ名
+     * @param password      パスワード
+     * @param adminUser     管理者ユーザ
+     * @param adminPassword 管理者パスワード
+     * @param schema        スキーマ
+     * @throws MojoExecutionException 例外
+     */
+    public abstract void dropAll(String user, String password, String adminUser,
+            String adminPassword, String schema) throws MojoExecutionException;
+
+    public void importSchema(ImportParams params) throws MojoExecutionException {
+        importSchemaGeneral(params);
+    }
+
+    protected void importSchemaGeneral(ImportParams params) throws MojoExecutionException {
+
+        File inputDir = params.getInputDirectory();
+
         // DDLの実行
-        SqlExecutor sqlExecutor = new SqlExecutor(url, params.getUser(), params.getPassword(), 
-                new File(inputDir, DDL_DIR_NAME), new File(inputDir, EXTRADDL_DIR_NAME), 
+        SqlExecutor sqlExecutor = new SqlExecutor(url, params.getUser(), params.getPassword(),
+                new File(inputDir, DDL_DIR_NAME), new File(inputDir, EXTRADDL_DIR_NAME),
                 params.getDelimiter(), params.getOnError(), params.getLogger());
         try {
             sqlExecutor.execute();
@@ -142,71 +142,72 @@ public abstract class Dialect {
         }
 
         // LoadDataの実行
-        CsvLoader dataLoader = new CsvLoader(url, driver, params.getSchema(), params.getUser(), params.getPassword(), 
-                new File(inputDir, DATA_DIR_NAME), UTF8, null, params.getOnError(), params.getLogger());
+        CsvLoader dataLoader = new CsvLoader(url, driver, params.getSchema(), params.getUser(),
+                params.getPassword(), new File(inputDir, DATA_DIR_NAME), UTF8, null,
+                params.getOnError(), params.getLogger());
         try {
             dataLoader.execute();
         } catch (Exception e) {
             throw new MojoExecutionException("CSVデータのロード処理で失敗しました:", e);
         }
-	}
+    }
 
-	/**
-	 * ユーザを作成します。
-	 * 
-	 * 既にユーザが存在する場合はそのユーザを削除します。
-	 * 
-	 * @param user　ユーザ名
-	 * @param password パスワード
-	 * @param adminUser 管理者ユーザ
-	 * @param adminPassword 管理者パスワード
-	 * @throws MojoExecutionException 例外
-	 */
-	public abstract void createUser(String user, String password, String adminUser,
-			String adminPassword) throws MojoExecutionException;
-	
-	
+    /**
+     * ユーザを作成します。
+     * 
+     * 既にユーザが存在する場合はそのユーザを削除します。
+     * 
+     * @param user          ユーザ名
+     * @param password      パスワード
+     * @param adminUser     管理者ユーザ
+     * @param adminPassword 管理者パスワード
+     * @throws MojoExecutionException 例外
+     */
+    public abstract void createUser(String user, String password, String adminUser,
+            String adminPassword) throws MojoExecutionException;
+
+
     protected String url;
     protected String driver;
 
     public void setUrl(String url) {
         this.url = url;
     }
-    
-	public void setDriver(String driver) {
-		DriverManagerUtil.registerDriver(driver);
-		this.driver = driver;
-	}
 
-	public abstract TypeMapper getTypeMapper();
-	
+    public void setDriver(String driver) {
+        DriverManagerUtil.registerDriver(driver);
+        this.driver = driver;
+    }
+
+    public abstract TypeMapper getTypeMapper();
+
     public String normalizeUserName(String userName) {
         return userName;
     }
 
-	public String normalizeSchemaName(String schemaName) {
-		return schemaName;
-	}
+    public String normalizeSchemaName(String schemaName) {
+        return schemaName;
+    }
 
-	public String normalizeTableName(String tableName) {
-		return tableName;
-	}
+    public String normalizeTableName(String tableName) {
+        return tableName;
+    }
 
-	public String normalizeColumnName(String colmunName) {
-		return colmunName;
-	}
+    public String normalizeColumnName(String colmunName) {
+        return colmunName;
+    }
 
     public GenerationType getGenerationType() {
         return GenerationType.IDENTITY;
     }
 
-	public List<AlternativeGenerator> getAlternativeGenerators() {
-		return Collections.emptyList();
-	}
+    public List<AlternativeGenerator> getAlternativeGenerators() {
+        return Collections.emptyList();
+    }
 
-	public String getViewDefinitionSql() {
-		return null;
-	}
+    public String getViewDefinitionSql() {
+        return null;
+    }
 
     public String getSequenceDefinitionSql() {
         return null;
@@ -231,31 +232,31 @@ public abstract class Dialect {
     /**
      * 指定されたスキーマの指定されたテーブルの指定されたカラムの型に合うsqlTypeを返す。
      * 
-     * @param conn コネクション
-     * @param schema スキーマ
+     * @param conn      コネクション
+     * @param schema    スキーマ
      * @param tableName テーブル名
-     * @param colName カラ無名
+     * @param colName   カラ無名
      * @return sqlType sqlType
      * @throws SQLException
      */
-    public int guessType(Connection conn, String schema, String tableName, String colName) throws SQLException {
+    public int guessType(Connection conn, String schema, String tableName, String colName)
+            throws SQLException {
         if (metaData == null) {
             metaData = conn.getMetaData();
         }
 
         ResultSet rs = null;
         try {
-            rs = metaData.getColumns(null,
-            		                            schema,
-                                                normalizeTableName(tableName),
-                                                normalizeColumnName(colName));
+            rs = metaData.getColumns(null, schema, normalizeTableName(tableName),
+                    normalizeColumnName(colName));
             if (!rs.next()) {
                 throw new SQLException(tableName + "に" + colName + "を見つけられません。");
             }
 
             String type = rs.getString("TYPE_NAME");
             if (!isUsableType(type)) {
-                System.err.println("[WARN] " + tableName + "." + colName + "  " + type + "型はサポートしていません。");
+                System.err.println(
+                        "[WARN] " + tableName + "." + colName + "  " + type + "型はサポートしていません。");
                 return UN_USABLE_TYPE;
             }
             return rs.getInt("DATA_TYPE");
@@ -275,32 +276,35 @@ public abstract class Dialect {
 
     /**
      * stmtの指定されたインデックスに指定された値をセットする。
-     * @param stmt I/O
+     * 
+     * @param stmt           I/O
      * @param parameterIndex parameter index
-     * @param value set value
-     * @param sqlType sql type
+     * @param value          set value
+     * @param sqlType        sql type
      * @throws SQLException error
      */
-    public void setObjectInStmt(PreparedStatement stmt, int parameterIndex, String value, int sqlType) throws SQLException {
-        if(sqlType == UN_USABLE_TYPE) {
+    public void setObjectInStmt(PreparedStatement stmt, int parameterIndex, String value,
+            int sqlType) throws SQLException {
+        if (sqlType == UN_USABLE_TYPE) {
             stmt.setNull(parameterIndex, Types.NULL);
-        } else if(StringUtil.isBlank(value) || "　".equals(value)) {
+        } else if (StringUtil.isBlank(value) || "　".equals(value)) {
             stmt.setNull(parameterIndex, sqlType);
         } else {
             stmt.setObject(parameterIndex, value, sqlType);
         }
     }
-    
+
     /**
      * ViewのDDL定義を取得する。
      * 
-     * @param conn コネクション 
-     * @param viewName　ビュー名
+     * @param conn      コネクション
+     * @param viewName  ビュー名
      * @param tableMeta ビュー定義のメタデータ
      * @return ViewのDDL
-     * @throws SQLException SQL例外 
+     * @throws SQLException SQL例外
      */
-    public String getViewDefinition(Connection conn, String viewName, DbTableMeta tableMeta) throws SQLException {
+    public String getViewDefinition(Connection conn, String viewName, DbTableMeta tableMeta)
+            throws SQLException {
         String sql = getViewDefinitionSql();
         if (sql == null) {
             return null;
@@ -309,14 +313,14 @@ public abstract class Dialect {
         PreparedStatement stmt = null;
         ResultSet rs = null;
         int idx = 1;
-        
+
         try {
             stmt = conn.prepareStatement(sql);
             stmt.setString(idx++, viewName);
-            stmt.setString(idx++, tableMeta.getSchemaName());	
-            
+            stmt.setString(idx++, tableMeta.getSchemaName());
+
             rs = stmt.executeQuery();
-            while(rs.next()) {
+            while (rs.next()) {
                 return rs.getString(1);
             }
         } finally {
@@ -326,73 +330,76 @@ public abstract class Dialect {
         return null;
     }
 
-    protected void dropObjectsInSchema(Connection conn, String dropListSql, String schema, OBJECT_TYPE objType) throws SQLException {
-    	Statement stmt = null;
-    	ResultSet rs = null;
-    	
-    	try {
-    	  stmt = conn.createStatement();
-    	  rs = stmt.executeQuery(dropListSql);
-    	  String dropSql = "";
-    	  
-    	  while (rs.next()) {
-      	      switch (objType) {
-		        case FK: // 外部キー
-  		        	dropSql = "ALTER TABLE " + schema + "." + rs.getString(1) + " DROP CONSTRAINT " + rs.getString(2);
-          		  break;
-  		        case TABLE: // テーブル
-  		        	dropSql = "DROP TABLE "  + schema + "." + rs.getString(1);
-    		      break;
-  		        case VIEW: // ビュー
-  		        	dropSql = "DROP VIEW "  + schema + "." + rs.getString(1);
-  			      break;
-  		        case SEQUENCE: // シーケンス
-  		        	dropSql = "DROP SEQUENCE "  + schema + "." + rs.getString(1);
-          		  break;
-  		      }
-      	    
-      	    stmt = conn.createStatement();
-      	    System.err.println(dropSql);
-      	    stmt.execute(dropSql);
-    	  }
+    protected void dropObjectsInSchema(Connection conn, String dropListSql, String schema,
+            OBJECT_TYPE objType) throws SQLException {
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(dropListSql);
+            String dropSql = "";
+
+            while (rs.next()) {
+                switch (objType) {
+                    case FK: // 外部キー
+                        dropSql = "ALTER TABLE " + schema + "." + rs.getString(1)
+                                + " DROP CONSTRAINT " + rs.getString(2);
+                        break;
+                    case TABLE: // テーブル
+                        dropSql = "DROP TABLE " + schema + "." + rs.getString(1);
+                        break;
+                    case VIEW: // ビュー
+                        dropSql = "DROP VIEW " + schema + "." + rs.getString(1);
+                        break;
+                    case SEQUENCE: // シーケンス
+                        dropSql = "DROP SEQUENCE " + schema + "." + rs.getString(1);
+                        break;
+                }
+
+                stmt = conn.createStatement();
+                System.err.println(dropSql);
+                stmt.execute(dropSql);
+            }
         } finally {
             StatementUtil.close(stmt);
         }
     }
-    
-    protected void grantSchemaObjToUser(Connection conn, String grantListSql, String schema, String user, OBJECT_TYPE objType) throws SQLException {
-    	Statement stmt = null;
-    	ResultSet rs = null;
-    	
-    	try {
-    	  stmt = conn.createStatement();
-    	  rs = stmt.executeQuery(grantListSql);
-    	  String grantSql = "";
-    	  
-    	  while (rs.next()) {
-      	      switch (objType) {
-  		        case TABLE: // テーブル
-  		        	grantSql = "GRANT ALL ON "  + schema + "." + rs.getString(1) + " TO " + user;
-    		      break;
-  		        case VIEW: // ビュー
-  		        	grantSql = "GRANT ALL ON "  + schema + "." + rs.getString(1) + " TO " + user;
-  			      break;
-  		        case SEQUENCE: // シーケンス
-  		        	grantSql = "GRANT ALL ON "  + schema + "." + rs.getString(1) + " TO " + user;
-          		  break;
-         		default:
-          		  break;
-  		      }
-      	    
-      	    stmt = conn.createStatement();
-      	    System.err.println(grantSql);
-      	    stmt.execute(grantSql);
-    	  }
+
+    protected void grantSchemaObjToUser(Connection conn, String grantListSql, String schema,
+            String user, OBJECT_TYPE objType) throws SQLException {
+        Statement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(grantListSql);
+            String grantSql = "";
+
+            while (rs.next()) {
+                switch (objType) {
+                    case TABLE: // テーブル
+                        grantSql = "GRANT ALL ON " + schema + "." + rs.getString(1) + " TO " + user;
+                        break;
+                    case VIEW: // ビュー
+                        grantSql = "GRANT ALL ON " + schema + "." + rs.getString(1) + " TO " + user;
+                        break;
+                    case SEQUENCE: // シーケンス
+                        grantSql = "GRANT ALL ON " + schema + "." + rs.getString(1) + " TO " + user;
+                        break;
+                    default:
+                        break;
+                }
+
+                stmt = conn.createStatement();
+                System.err.println(grantSql);
+                stmt.execute(grantSql);
+            }
         } finally {
             StatementUtil.close(stmt);
         }
     }
-    
+
     /**
      * load-dataで取り込み可能な文字列表現に変換します。
      * 
@@ -403,14 +410,14 @@ public abstract class Dialect {
      * @return 文字列データ
      * @throws SQLException
      */
-    public String convertLoadData(ResultSet resultSet, int columnIndex, String columnLabel, int sqlType) 
-            throws SQLException {
+    public String convertLoadData(ResultSet resultSet, int columnIndex, String columnLabel,
+            int sqlType) throws SQLException {
 
         String value = resultSet.getString(columnLabel);
 
         // null to blank.
         value = StringUtils.defaultIfEmpty(value, "");
-        
+
         return value;
     }
 }

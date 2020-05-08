@@ -1,17 +1,15 @@
 /*
  * Copyright (C) 2015 coastland
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package jp.co.tis.gsp.tools.dba;
@@ -26,7 +24,6 @@ import java.util.Map;
 import jp.co.tis.gsp.tools.dba.dialect.Dialect;
 import org.apache.commons.lang3.StringUtils;
 import org.seasar.framework.util.tiger.CollectionsUtil;
-
 
 
 
@@ -46,13 +43,14 @@ public class CsvInsertHandler {
         TYPE_NAMES.put("TIMESTAMP", Types.TIMESTAMP);
         TYPE_NAMES.put("ARRAY", Types.ARRAY);
     }
-    
-    public CsvInsertHandler(Connection conn, Dialect dialect, String schema, String tableName, String[] headers) throws SQLException {
+
+    public CsvInsertHandler(Connection conn, Dialect dialect, String schema, String tableName,
+            String[] headers) throws SQLException {
         this.conn = conn;
         this.schema = schema;
         this.tableName = tableName;
         this.columns = CollectionsUtil.newArrayList(headers.length);
-        this.types   = CollectionsUtil.newArrayList(headers.length);
+        this.types = CollectionsUtil.newArrayList(headers.length);
         this.dialect = dialect;
         initialize(headers);
     }
@@ -60,9 +58,8 @@ public class CsvInsertHandler {
     public void prepare() throws SQLException {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
         sb.append(schema).append(".").append(tableName).append("(")
-            .append(StringUtils.join(columns, ','))
-            .append(") VALUES (");
-        for(int i=0; i<columns.size(); i++) {
+                .append(StringUtils.join(columns, ',')).append(") VALUES (");
+        for (int i = 0; i < columns.size(); i++) {
             sb.append("?");
             if (i < columns.size() - 1) {
                 sb.append(",");
@@ -73,7 +70,7 @@ public class CsvInsertHandler {
     }
 
     public void setObject(int parameterIndex, String value) throws SQLException {
-        dialect.setObjectInStmt(stmt, parameterIndex, value, types.get(parameterIndex-1));
+        dialect.setObjectInStmt(stmt, parameterIndex, value, types.get(parameterIndex - 1));
     }
 
     public int execute() throws SQLException {
@@ -88,7 +85,7 @@ public class CsvInsertHandler {
     private String initialize(String[] headers) throws SQLException {
         for (String header : headers) {
             if (header.indexOf(':') >= 0) {
-                String[] columnTokens = header.split(":",2);
+                String[] columnTokens = header.split(":", 2);
                 columns.add(columnTokens[0]);
                 types.add(getTypeByName(columnTokens[1]));
             } else {
