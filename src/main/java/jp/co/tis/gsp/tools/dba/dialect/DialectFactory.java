@@ -16,10 +16,9 @@
 
 package jp.co.tis.gsp.tools.dba.dialect;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 
 public class DialectFactory {
 	public static Dialect getDialect(String url, String driver) {
@@ -39,7 +38,7 @@ public class DialectFactory {
                         +StringUtils.capitalize(urlTokens[1])+"Dialect";
                 dialectClass = Class.forName(dialectClassName);
             }
-			dialect = (Dialect)dialectClass.newInstance();
+			dialect = (Dialect)dialectClass.getDeclaredConstructor().newInstance();
 			dialect.setUrl(url);
 			dialect.setDriver(driver);
 		} catch(Exception e) {
