@@ -1,6 +1,5 @@
 package jp.co.tis.gsp.test.util;
 
-import java.util.regex.Pattern;
 
 public abstract class Entry implements Comparable<Entry> {
 
@@ -32,6 +31,7 @@ public abstract class Entry implements Comparable<Entry> {
 		throw new Exception();
 	}
 
+ @Override
 	public String toString() {
 		return getPath();
 	}

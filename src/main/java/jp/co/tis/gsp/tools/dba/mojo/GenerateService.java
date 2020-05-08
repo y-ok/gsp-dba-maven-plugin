@@ -16,24 +16,20 @@
 
 package jp.co.tis.gsp.tools.dba.mojo;
 
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.seasar.extension.jdbc.gen.command.CommandInvoker;
-import org.seasar.extension.jdbc.gen.internal.command.AbstractCommand;
-import org.seasar.extension.jdbc.gen.internal.command.CommandInvokerImpl;
-import org.seasar.extension.jdbc.gen.internal.command.GenerateNamesCommand;
-import org.seasar.extension.jdbc.gen.internal.command.GenerateServiceCommand;
-import org.seasar.extension.jdbc.gen.internal.util.ReflectUtil;
-import org.seasar.framework.util.ClassUtil;
-import org.seasar.framework.util.MethodUtil;
-
 import java.io.File;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
+import org.seasar.extension.jdbc.gen.command.CommandInvoker;
+import org.seasar.extension.jdbc.gen.internal.command.CommandInvokerImpl;
+import org.seasar.extension.jdbc.gen.internal.command.GenerateNamesCommand;
+import org.seasar.extension.jdbc.gen.internal.command.GenerateServiceCommand;
+import org.seasar.extension.jdbc.gen.internal.util.ReflectUtil;
+
 
 /**
 *
@@ -81,46 +77,7 @@ public class GenerateService extends AbstractDbaMojo {
 		executeGenerateService();
 	}
 
-    private void executeGenerateAbstractSolrService() {
-        final GenerateServiceCommand command = new GenerateServiceCommand();
-        command.setClasspathDir(diconDir);
-        command.setNamesPackageName(namesPackageName);
-        command.setEntityPackageName(entityPackageName);
-        command.setServicePackageName(servicePackageName);
-        command.setAbstractServiceTemplateFileName("java/gsp_abstract_solr_service.ftl");
-        command.setServiceClassNameSuffix("SolrService");
-
-        final List<URL> urlList = new ArrayList<URL>();
-        try {
-            urlList.add(diconDir.toURI().toURL());
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException(e);
-        }
-
-        final ClassLoader oldLoader = Thread.currentThread().getContextClassLoader();
-        final URLClassLoader newLoader = new URLClassLoader(urlList.toArray(new URL[] {}),
-                oldLoader);
-        try {
-            Thread.currentThread().setContextClassLoader(newLoader);
-
-            command.setRootPackageName(rootPackage);
-            Method init = ClassUtil.getDeclaredMethod(
-                    AbstractCommand.class,
-                    "init",
-                    null);
-            init.setAccessible(true);
-            MethodUtil.invoke(init, command, null);
-
-            Method generateAbstractService = ClassUtil.getDeclaredMethod(
-                    GenerateServiceCommand.class,
-                    "generateAbstractService",
-                    null);
-            generateAbstractService.setAccessible(true);
-            MethodUtil.invoke(generateAbstractService, command, null);
-        } finally {
-            Thread.currentThread().setContextClassLoader(oldLoader);
-        }
-    }
+    
 	private void executeGenerateService() {
         final GenerateServiceCommand command = new GenerateServiceCommand();
 		command.setClasspathDir(diconDir);

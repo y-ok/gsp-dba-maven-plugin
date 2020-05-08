@@ -22,7 +22,9 @@ import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
+import jp.co.tis.gsp.tools.dba.dialect.Dialect;
+import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
+import jp.co.tis.gsp.tools.dba.dialect.param.ImportParams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.artifact.Artifact;
@@ -30,17 +32,13 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.ArtifactResolutionRequest;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.repository.RepositorySystem;
 import org.seasar.framework.util.JarFileUtil;
 
-import jp.co.tis.gsp.tools.dba.dialect.Dialect;
-import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
-import jp.co.tis.gsp.tools.dba.dialect.param.ImportParams;
+
 
 /**
  * import-schema.
@@ -54,10 +52,10 @@ public class ImportSchemaMojo extends AbstractDbaMojo {
     @Parameter(defaultValue = "target/dump")
 	protected File inputDirectory;
 
-    @Component
+    @Parameter(defaultValue = "${plugin}", readonly = true)
     private MavenProject project;
 
-    @Component
+    @Parameter(defaultValue = "${plugin}", readonly = true)
     protected RepositorySystem repositorySystem;
 
     @Parameter(property="localRepository", required = true, readonly = true)
@@ -76,7 +74,7 @@ public class ImportSchemaMojo extends AbstractDbaMojo {
     final Charset UTF8 = Charset.forName("UTF-8");
 
     @Override
-	protected void executeMojoSpec() throws MojoExecutionException, MojoFailureException {
+	protected void executeMojoSpec() throws MojoExecutionException {
 		Dialect dialect = DialectFactory.getDialect(url, driver);
 		dialect.createUser(user, password, adminUser, adminPassword);
 		dialect.dropAll(user, password, adminUser, adminPassword, schema);
@@ -150,7 +148,7 @@ public class ImportSchemaMojo extends AbstractDbaMojo {
     private void extractJarAll(JarFile jar, String destDir) throws IOException {
         Enumeration<JarEntry> enumEntries = jar.entries();
         while (enumEntries.hasMoreElements()) {
-            java.util.jar.JarEntry file = (java.util.jar.JarEntry) enumEntries.nextElement();
+            java.util.jar.JarEntry file = enumEntries.nextElement();
             java.io.File f = new java.io.File(destDir + java.io.File.separator + file.getName());
             if (file.isDirectory()) {
                 f.mkdir();

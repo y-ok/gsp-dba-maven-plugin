@@ -14,7 +14,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import org.apache.maven.plugin.MojoExecutionException;
 import org.codehaus.plexus.util.StringUtils;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
@@ -23,9 +22,8 @@ import org.seasar.framework.util.ResultSetUtil;
 import org.seasar.framework.util.StatementUtil;
 import org.seasar.framework.util.StringUtil;
 
-public class DBTestUtil {
 
-	private static final String FS = System.getProperty("file.separator");
+public class DBTestUtil {
 
 	/**
 	 * 指定ユーザをドロップします。
@@ -287,6 +285,7 @@ public class DBTestUtil {
 	 * @return カウント
 	 * @throws SQLException
 	 */
+	@SuppressWarnings("unchecked")
 	static public <T> T getValueOfSql(String sql, String url, String user, String password) throws SQLException {
 
 		Statement stmt = null;

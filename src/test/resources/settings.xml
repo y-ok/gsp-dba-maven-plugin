@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
 	<profiles>
 		<profile>
@@ -15,7 +14,7 @@
 				<db.url>${h2.url}</db.url>
 				<db.adminUser>${h2.adminUser}</db.adminUser>
 				<db.adminPassword></db.adminPassword>
- 				<dba.useDB>h2</dba.useDB>
+				<dba.useDB>h2</dba.useDB>
 			</properties>
 		</profile>
 		<profile>

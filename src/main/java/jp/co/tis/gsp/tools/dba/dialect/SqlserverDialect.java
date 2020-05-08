@@ -24,20 +24,17 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
+import jp.co.tis.gsp.tools.db.EntityDependencyParser;
+import jp.co.tis.gsp.tools.db.TypeMapper;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.seasar.extension.jdbc.gen.dialect.GenDialectRegistry;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
 import org.seasar.framework.util.StatementUtil;
 import org.seasar.framework.util.StringUtil;
-
-import jp.co.tis.gsp.tools.db.EntityDependencyParser;
-import jp.co.tis.gsp.tools.db.TypeMapper;
 
 public class SqlserverDialect extends Dialect {
     private static final List<String> USABLE_TYPE_NAMES = new ArrayList<String>();
@@ -73,49 +70,43 @@ public class SqlserverDialect extends Dialect {
         USABLE_TYPE_NAMES.add("varchar");
         USABLE_TYPE_NAMES.add("int identity");
     }
-    
+
     public SqlserverDialect() {
-        GenDialectRegistry.deregister(
-                org.seasar.extension.jdbc.dialect.MssqlDialect.class
-        );
-        GenDialectRegistry.register(
-                org.seasar.extension.jdbc.dialect.MssqlDialect.class,
-                new ExtendedMssqlGenDialect()
-        );
+        GenDialectRegistry.deregister(org.seasar.extension.jdbc.dialect.MssqlDialect.class);
+        GenDialectRegistry.register(org.seasar.extension.jdbc.dialect.MssqlDialect.class,
+                new ExtendedMssqlGenDialect());
     }
-    
+
     @Override
-    public void dropAll(String user, String password, String adminUser,
-            String adminPassword, String schema) throws MojoExecutionException {
+    public void dropAll(String user, String password, String adminUser, String adminPassword, String schema)
+            throws MojoExecutionException {
         Connection conn = null;
         Statement stmt = null;
         PreparedStatement dropStmt;
         try {
             conn = DriverManager.getConnection(url, adminUser, adminPassword);
             stmt = conn.createStatement();
-            
+
             // 指定スキーマが存在しない場合は作成
             if (!existsSchema(conn, schema)) {
-            	stmt.execute("CREATE SCHEMA " + schema);
-            	conn.createStatement().execute("ALTER USER " + user + " WITH DEFAULT_SCHEMA = " + schema);
-                
-            	if (!StringUtils.equalsIgnoreCase(schema, "dbo")
-               		 && !StringUtils.equalsIgnoreCase(schema, "sys")
-               		 && !StringUtils.equalsIgnoreCase(schema, "INFORMATION_SCHEMA")) {
-               	      stmt.execute("ALTER AUTHORIZATION ON SCHEMA::" + schema + " TO " + user);
+                stmt.execute("CREATE SCHEMA " + schema);
+                conn.createStatement().execute("ALTER USER " + user + " WITH DEFAULT_SCHEMA = " + schema);
+
+                if (!StringUtils.equalsIgnoreCase(schema, "dbo") && !StringUtils.equalsIgnoreCase(schema, "sys")
+                        && !StringUtils.equalsIgnoreCase(schema, "INFORMATION_SCHEMA")) {
+                    stmt.execute("ALTER AUTHORIZATION ON SCHEMA::" + schema + " TO " + user);
                 }
-            	
+
                 return;
-            }else{
-            	conn.createStatement().execute("ALTER USER " + user + " WITH DEFAULT_SCHEMA = " + schema);
-            	
-                if (!StringUtils.equalsIgnoreCase(schema, "dbo")
-               		 && !StringUtils.equalsIgnoreCase(schema, "sys")
-               		 && !StringUtils.equalsIgnoreCase(schema, "INFORMATION_SCHEMA")) {
-             	      stmt.execute("ALTER AUTHORIZATION ON SCHEMA::" + schema + " TO " + user);
-               }
+            } else {
+                conn.createStatement().execute("ALTER USER " + user + " WITH DEFAULT_SCHEMA = " + schema);
+
+                if (!StringUtils.equalsIgnoreCase(schema, "dbo") && !StringUtils.equalsIgnoreCase(schema, "sys")
+                        && !StringUtils.equalsIgnoreCase(schema, "INFORMATION_SCHEMA")) {
+                    stmt.execute("ALTER AUTHORIZATION ON SCHEMA::" + schema + " TO " + user);
+                }
             }
-            
+
             // 依存関係を考慮し削除するテーブルをソートする
             EntityDependencyParser parser = new EntityDependencyParser();
             parser.parse(conn, url, schema);
@@ -124,14 +115,15 @@ public class SqlserverDialect extends Dialect {
             for (String table : tableList) {
                 dropObject(conn, schema, "TABLE", table);
             }
-            
+
             // ビューの削除を行う。
-            dropStmt = conn.prepareStatement("SELECT name, type_desc FROM sys.objects WHERE schema_id = SCHEMA_ID('" + schema + "') AND type IN ('U','V')");
+            dropStmt = conn.prepareStatement("SELECT name, type_desc FROM sys.objects WHERE schema_id = SCHEMA_ID('"
+                    + schema + "') AND type IN ('U','V')");
             ResultSet rs = dropStmt.executeQuery();
             while (rs.next()) {
                 if (!tableList.contains(rs.getString("name"))) {
                     String objectType = getObjectType(rs.getString("type_desc"));
-                    if (objectType != null) {  
+                    if (objectType != null) {
                         dropObject(conn, schema, objectType, rs.getString("name"));
                     }
                 }
@@ -145,20 +137,20 @@ public class SqlserverDialect extends Dialect {
     }
 
     @Override
-    public void createUser(String user, String password, String adminUser,
-            String adminPassword) throws MojoExecutionException {
+    public void createUser(String user, String password, String adminUser, String adminPassword)
+            throws MojoExecutionException {
         Connection conn = null;
         Statement stmt = null;
         try {
             conn = DriverManager.getConnection(url, adminUser, adminPassword);
             stmt = conn.createStatement();
-            if(existsUser(adminUser, adminPassword, user)) {
+            if (existsUser(adminUser, adminPassword, user)) {
                 return;
             }
             stmt.execute("CREATE LOGIN " + user + " WITH PASSWORD = '" + password + "'");
             stmt.execute("CREATE USER " + user + " FOR LOGIN " + user);
             stmt.execute("sp_addrolemember 'db_ddladmin','" + user + "'");
-            
+
         } catch (SQLException e) {
             throw new MojoExecutionException("CREATE USER実行中にエラー", e);
         } finally {
@@ -179,6 +171,7 @@ public class SqlserverDialect extends Dialect {
 
     /**
      * ビュー定義を検索するSQLを返却する。
+     * 
      * @return ビュー定義を検索するSQL文
      */
     @Override
@@ -186,6 +179,7 @@ public class SqlserverDialect extends Dialect {
         return "SELECT VIEW_DEFINITION FROM INFORMATION_SCHEMA.VIEWS WHERE TABLE_NAME = ? AND TABLE_SCHEMA = ?";
     }
 
+    @SuppressWarnings("resource")
     private boolean existsUser(String adminUser, String adminPassword, String user) throws SQLException {
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -248,7 +242,7 @@ public class SqlserverDialect extends Dialect {
     private void dropObject(Connection conn, String schema, String objectType, String objectName) throws SQLException {
         Statement stmt = null;
         try {
-            stmt =  conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "DROP " + objectType + " " + schema + "." + objectName;
             System.err.println(sql);
             stmt.execute(sql);
@@ -263,18 +257,19 @@ public class SqlserverDialect extends Dialect {
         if ("USER_TABLE".equals(type_desc)) {
             return "TABLE";
         } else if ("VIEW".equals(type_desc)) {
-            return "VIEW"; 
+            return "VIEW";
         }
         return null;
     }
 
     @Override
-    public void setObjectInStmt(PreparedStatement stmt, int parameterIndex, String value, int sqlType) throws SQLException {
-        if(sqlType == UN_USABLE_TYPE) {
+    public void setObjectInStmt(PreparedStatement stmt, int parameterIndex, String value, int sqlType)
+            throws SQLException {
+        if (sqlType == UN_USABLE_TYPE) {
             stmt.setNull(parameterIndex, Types.NULL);
-        } else if(StringUtil.isBlank(value) || "　".equals(value)) {
+        } else if (StringUtil.isBlank(value) || "　".equals(value)) {
             stmt.setNull(parameterIndex, sqlType);
-        } else if(sqlType == Types.TIME) {
+        } else if (sqlType == Types.TIME) {
             stmt.setTimestamp(parameterIndex, Timestamp.valueOf("1970-01-01 " + value));
         } else {
             stmt.setObject(parameterIndex, value, sqlType);

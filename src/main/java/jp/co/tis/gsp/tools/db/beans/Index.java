@@ -16,15 +16,14 @@
 
 package jp.co.tis.gsp.tools.db.beans;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
+
 
 @XmlRootElement(name="INDEX")
 public class Index {
@@ -39,7 +38,7 @@ public class Index {
 	/** カラム */
 	private List<IndexColumn> indexColumnList;
 
-	/** 正規のカラム*/
+	/** 正規のカラム */
 	private List<Column> columnList;
 	
 	/** インデックスの種別 */

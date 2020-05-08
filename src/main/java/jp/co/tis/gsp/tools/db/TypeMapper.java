@@ -21,30 +21,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import jp.co.tis.gsp.tools.db.beans.Column;
 
 public class TypeMapper {
 	static Pattern DATA_TYPE_PTN = Pattern.compile("(.*?)(?:\\((\\d+)(?:,(\\d+))?\\))?");
 	static Map<String, Integer> nameToTypeMap = new HashMap<String, Integer>();
 
-    static {
-        nameToTypeMap.put("VARCHAR", Types.VARCHAR);
-        nameToTypeMap.put("CHAR", Types.CHAR);
-        nameToTypeMap.put("TEXT", Types.CLOB);
-        nameToTypeMap.put("INT",  Types.INTEGER);
-        nameToTypeMap.put("INTEGER",  Types.INTEGER);
-        nameToTypeMap.put("BIGINT", Types.BIGINT);
-        nameToTypeMap.put("BOOLEAN", Types.BOOLEAN);
-    }
+	static {
+		nameToTypeMap.put("VARCHAR", Types.VARCHAR);
+		nameToTypeMap.put("CHAR", Types.CHAR);
+		nameToTypeMap.put("TEXT", Types.CLOB);
+		nameToTypeMap.put("INT", Types.INTEGER);
+		nameToTypeMap.put("INTEGER", Types.INTEGER);
+		nameToTypeMap.put("BIGINT", Types.BIGINT);
+		nameToTypeMap.put("BOOLEAN", Types.BOOLEAN);
+	}
 
 	private Map<Integer, String> typeToNameMap;
 
 	public TypeMapper() {
 
 	}
+
 	public TypeMapper(Map<Integer, String> typeToNameMap) {
-        this();
+		this();
 		setTypeToName(typeToNameMap);
 	}
 
@@ -68,19 +68,17 @@ public class TypeMapper {
 
 		Matcher m = DATA_TYPE_PTN.matcher(dbType);
 		if (m.matches()) {
-			int c = m.groupCount();
-
 			if (m.group(1) != null) {
 				dbType = m.group(1);
 			}
 			if (m.group(2) != null) {
-                try {
-                    Integer length = Integer.parseInt(m.group(2));
-                    if (length != null && length != 0)
-                        column.setLength(length);
-                } catch (NumberFormatException ex) {
-                    throw new IllegalArgumentException(column.getName() + " " + column.getDataType(), ex);
-                }
+				try {
+					Integer length = Integer.parseInt(m.group(2));
+					if (length != null && length != 0)
+						column.setLength(length);
+				} catch (NumberFormatException ex) {
+					throw new IllegalArgumentException(column.getName() + " " + column.getDataType(), ex);
+				}
 			}
 		}
 		column.setDataType(dbType);

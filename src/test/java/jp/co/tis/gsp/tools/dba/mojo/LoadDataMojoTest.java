@@ -6,7 +6,6 @@ import static org.junit.Assert.assertThat;
 import java.io.File;
 
 import org.apache.maven.plugin.MojoExecutionException;
-import org.h2.jdbc.JdbcSQLException;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -90,15 +89,15 @@ public class LoadDataMojoTest extends AbstractDdlMojoTest<LoadDataMojo> {
 
 			// テストケース対象プロジェクトのpom.xmlを取得
 			File pom = new File(getTestCaseDBPath(mf) + "/pom.xml");
-			
-			//generate-ddl テスト準備用コード
-//			GenerateDdlMojoTest genTest = new GenerateDdlMojoTest();
-//			genTest.setUp();
-//			GenerateDdlMojo genMojo = genTest.lookupConfiguredMojo(pom, GENERATE_DDL, mf.testDb);
-//			genMojo.execute();
-//			if(true) return;
-			
-			
+
+			// generate-ddl テスト準備用コード
+			// GenerateDdlMojoTest genTest = new GenerateDdlMojoTest();
+			// genTest.setUp();
+			// GenerateDdlMojo genMojo = genTest.lookupConfiguredMojo(pom, GENERATE_DDL,
+			// mf.testDb);
+			// genMojo.execute();
+			// if(true) return;
+
 			ExecuteDdlMojoTest ddlTest = new ExecuteDdlMojoTest();
 			ddlTest.setUp();
 			ExecuteDdlMojo ddlMojo = ddlTest.lookupConfiguredMojo(pom, EXECUTE_DDL, mf.testDb);
@@ -379,14 +378,14 @@ public class LoadDataMojoTest extends AbstractDdlMojoTest<LoadDataMojo> {
 
 			// pom.xmlより指定ゴールのMojoを取得し実行
 			LoadDataMojo mojo = this.lookupConfiguredMojo(pom, LOAD_DATA, mf.testDb);
-			
-	         try {
-	                mojo.execute();
-	                fail("期待した例外が発生しませんでした。");
-	         } catch (Exception e) {
-	             assertThat(e.getCause().getClass().equals(GspToolsException.class), is(true));
-	             assertThat(e.getCause().getMessage().equals("ルートとなるテーブルが見つかりません。循環参照になっていると思います！"), is(true));
-	         }
+
+			try {
+				mojo.execute();
+				fail("期待した例外が発生しませんでした。");
+			} catch (Exception e) {
+				assertThat(e.getCause().getClass().equals(GspToolsException.class), is(true));
+				assertThat(e.getCause().getMessage().equals("ルートとなるテーブルが見つかりません。循環参照になっていると思います！"), is(true));
+			}
 		}
 	}
 }

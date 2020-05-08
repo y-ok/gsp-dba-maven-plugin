@@ -17,17 +17,14 @@
 package jp.co.tis.gsp.tools.dba.mojo;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
 import java.util.Map;
-
+import jp.co.tis.gsp.tools.dba.util.CsvLoader;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import jp.co.tis.gsp.tools.dba.util.CsvLoader;
+
 
 /**
  * load-data.
@@ -61,13 +58,13 @@ public class LoadDataMojo extends AbstractDbaMojo {
     final Charset SJIS = Charset.forName("Windows-31J");
 
     @Override
-    protected void executeMojoSpec() throws MojoExecutionException, MojoFailureException {
+    protected void executeMojoSpec() throws MojoExecutionException {
 
-        CsvLoader dataLoader = new CsvLoader(url, driver, schema, adminUser, adminPassword, dataDirectory, SJIS,
+        final CsvLoader dataLoader = new CsvLoader(url, driver, schema, adminUser, adminPassword, dataDirectory, SJIS,
                 specifiedEncodingFiles, onError, getLog());
         try {
             dataLoader.execute();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             throw new MojoExecutionException("CSVデータのロード処理で失敗しました:", e);
         }
 

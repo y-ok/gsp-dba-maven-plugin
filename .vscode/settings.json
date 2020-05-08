@@ -1,0 +1,19 @@
+{
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.formatOnPaste": true,
+  "editor.renderWhitespace": "all",
+  "editor.renderLineHighlight": "all",
+  "editor.autoIndent": "advanced",
+  "editor.renderControlCharacters": true,
+  "editor.renderIndentGuides": true,
+  "editor.renderLineHighlightOnlyWhenFocus": true,
+  "editor.insertSpaces": true,
+  "editor.tabSize": 4,
+  "editor.detectIndentation": false,
+  "git.autofetch": true,
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.format.enabled": true,
+  "java.format.onType.enabled": true,
+  "java.format.settings.url": "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml"
+}

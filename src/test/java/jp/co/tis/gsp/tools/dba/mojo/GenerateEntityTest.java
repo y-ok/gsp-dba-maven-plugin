@@ -1,12 +1,15 @@
 package jp.co.tis.gsp.tools.dba.mojo;
 
-import jp.co.tis.gsp.test.util.*;
-import org.apache.maven.plugin.MojoExecutionException;
+import java.io.File;
+import jp.co.tis.gsp.test.util.DirUtil;
+import jp.co.tis.gsp.test.util.Entry;
+import jp.co.tis.gsp.test.util.TestDBPattern;
+import jp.co.tis.gsp.test.util.TestDB;
+import jp.co.tis.gsp.test.util.MojoTestFixture;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
-import java.io.File;
+import org.apache.maven.plugin.MojoExecutionException;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -31,8 +34,8 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "type", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.h2,
-            TestDB.sqlserver, TestDB.mysql })
+    @TestDBPattern(testCase = "type", testDb = {TestDB.oracle, TestDB.postgresql, TestDB.db2,
+            TestDB.h2, TestDB.sqlserver, TestDB.mysql})
     public void testType() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -75,8 +78,8 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "typeWithDoma", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.h2,
-            TestDB.sqlserver, TestDB.mysql })
+    @TestDBPattern(testCase = "typeWithDoma", testDb = {TestDB.oracle, TestDB.postgresql,
+            TestDB.db2, TestDB.h2, TestDB.sqlserver, TestDB.mysql})
     public void testTypeWithDoma() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -120,8 +123,8 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "typeWithJSR310",testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.h2,
-            TestDB.sqlserver, TestDB.mysql })
+    @TestDBPattern(testCase = "typeWithJSR310", testDb = {TestDB.oracle, TestDB.postgresql,
+            TestDB.db2, TestDB.h2, TestDB.sqlserver, TestDB.mysql})
     public void testTypeWithJSR310() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -165,8 +168,8 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "typeWithDomaAndJSR310",testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.h2,
-            TestDB.sqlserver, TestDB.mysql })
+    @TestDBPattern(testCase = "typeWithDomaAndJSR310", testDb = {TestDB.oracle, TestDB.postgresql,
+            TestDB.db2, TestDB.h2, TestDB.sqlserver, TestDB.mysql})
     public void testTypeWithDomaAndJSR310() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -195,7 +198,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
     }
 
     /**
-     * ＤＢの基本機能を生成するＤＤＬの実行テスト。
+     * DBの基本機能を生成するDDLの実行テスト。
      *
      * <h4>検証内容</h4>
      * <ul>
@@ -219,8 +222,8 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "basic", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.h2,
-            TestDB.sqlserver, TestDB.mysql })
+    @TestDBPattern(testCase = "basic", testDb = {TestDB.oracle, TestDB.postgresql, TestDB.db2,
+            TestDB.h2, TestDB.sqlserver, TestDB.mysql})
     public void testBasic() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -248,7 +251,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
     }
 
     /**
-     * ＤＢの基本機能を生成するＤＤＬの実行テスト。
+     * DBの基本機能を生成するDDLの実行テスト。
      *
      * <h4>検証内容</h4>
      * <ul>
@@ -272,7 +275,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "basicWithDoma", testDb = { TestDB.h2, TestDB.oracle })
+    @TestDBPattern(testCase = "basicWithDoma", testDb = {TestDB.h2, TestDB.oracle})
     public void testBasicWithDoma() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -314,8 +317,8 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "another_schema", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2,
-            TestDB.sqlserver })
+    @TestDBPattern(testCase = "another_schema",
+            testDb = {TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.sqlserver})
     public void testAnotherSchema() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -358,7 +361,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "ignoreTableNamePattern", testDb = { TestDB.h2 })
+    @TestDBPattern(testCase = "ignoreTableNamePattern", testDb = {TestDB.h2})
     public void testIgnoreTableNamePattern() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -401,7 +404,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "useAccessor", testDb = { TestDB.h2 })
+    @TestDBPattern(testCase = "useAccessor", testDb = {TestDB.h2})
     public void testUseAccessor() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -444,7 +447,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "entityTemplate", testDb = { TestDB.h2 })
+    @TestDBPattern(testCase = "entityTemplate", testDb = {TestDB.h2})
     public void testEntityTemplate() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -487,7 +490,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "dialectClassName", testDb = { TestDB.postgresql })
+    @TestDBPattern(testCase = "dialectClassName", testDb = {TestDB.postgresql})
     public void testDialectClassName() throws Exception {
 
         for (MojoTestFixture mf : mojoTestFixtureList) {
@@ -524,7 +527,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "genDialectClassName", testDb = { TestDB.h2 })
+    @TestDBPattern(testCase = "genDialectClassName", testDb = {TestDB.h2})
     public void testGenDialectClassName() throws Exception {
 
         for (MojoTestFixture mf : mojoTestFixtureList) {
@@ -561,7 +564,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "diconDir", testDb = { TestDB.h2 })
+    @TestDBPattern(testCase = "diconDir", testDb = {TestDB.h2})
     public void testDiconDir() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -604,7 +607,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "diconDir_error", testDb = { TestDB.h2 })
+    @TestDBPattern(testCase = "diconDir_error", testDb = {TestDB.h2})
     public void testDiconDirError() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -636,8 +639,8 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "templateFilePrimaryDir", testDb = { TestDB.h2 })
-    public void testＴemplateFilePrimaryDir() throws Exception {
+    @TestDBPattern(testCase = "templateFilePrimaryDir", testDb = {TestDB.h2})
+    public void testTemplateFilePrimaryDir() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
         for (MojoTestFixture mf : mojoTestFixtureList) {
@@ -680,8 +683,8 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "view", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.sqlserver,
-            TestDB.mysql })
+    @TestDBPattern(testCase = "view",
+            testDb = {TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.sqlserver, TestDB.mysql})
     public void testView() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -724,7 +727,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "extra", testDb = { TestDB.oracle })
+    @TestDBPattern(testCase = "extra", testDb = {TestDB.oracle})
     public void testExtra() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -769,7 +772,7 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "allocationSize", testDb = { TestDB.oracle })
+    @TestDBPattern(testCase = "allocationSize", testDb = {TestDB.oracle})
     public void testAllocationSize() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -797,25 +800,24 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
         }
     }
 
-
     /**
-     * @Versionアノテーションの付与テスト
+     * @Versionアノテーションの付与テスト.
      *
      * <h4>検証内容</h4>
      * <ul>
-     * <li>VersionColumnNamePatternが未指定の場合。カラム名「VERSION_NO」に@Versionアノテーションが付与されるかを検証。</li>
+     * <li>VersionColumnNamePatternが未指定の場合。カラム名「VERSION_NO」に@Versionアノテーションが付与されるかを検証</li>
      * </ul>
      *
      * <h4>検証結果</h4>
      * <ul>
-     * <li>期待値Entityファイルと同一であること。</li>
+     * <li>期待値Entityファイルと同一であること</li>
      * </ul>
      *
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "nonVersionColumnNamePattern", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.h2,
-            TestDB.sqlserver, TestDB.mysql })
+    @TestDBPattern(testCase = "nonVersionColumnNamePattern", testDb = {TestDB.oracle,
+            TestDB.postgresql, TestDB.db2, TestDB.h2, TestDB.sqlserver, TestDB.mysql})
     public void testNonVersionColumnNamePattern() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ
@@ -843,26 +845,25 @@ public class GenerateEntityTest extends AbstractDdlMojoTest<GenerateEntity> {
         }
     }
 
-
     /**
-     * @Versionアノテーションの付与テスト
+     * @Versionアノテーションの付与テスト.
      *
      * <h4>検証内容</h4>
      * <ul>
      * <li>versionColumnNamePatternに「HOG.」を指定した場合</li>
-     * <li>カラム名「HOGE」に@Versionアノテーションが付与されるかを検証。</li>
+     * <li>カラム名「HOGE」に@Versionアノテーションが付与されるかを検証</li>
      * </ul>
      *
      * <h4>検証結果</h4>
      * <ul>
-     * <li>期待値Entityファイルと同一であること。</li>
+     * <li>期待値Entityファイルと同一であること</li>
      * </ul>
      *
      * @throws Exception
      */
     @Test
-    @TestDBPattern(testCase = "customVersionColumnNamePattern", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.h2,
-            TestDB.sqlserver, TestDB.mysql })
+    @TestDBPattern(testCase = "customVersionColumnNamePattern", testDb = {TestDB.oracle,
+            TestDB.postgresql, TestDB.db2, TestDB.h2, TestDB.sqlserver, TestDB.mysql})
     public void testCustomVersionColumnNamePattern() throws Exception {
 
         // 指定されたケース及びテスト対象のDBだけループ

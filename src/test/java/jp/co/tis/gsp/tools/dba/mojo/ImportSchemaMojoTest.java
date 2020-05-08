@@ -7,8 +7,12 @@ import java.io.File;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-
-import org.apache.commons.io.FileUtils;
+import jp.co.tis.gsp.test.util.DBTestUtil;
+import jp.co.tis.gsp.test.util.DirUtil;
+import jp.co.tis.gsp.test.util.Entry;
+import jp.co.tis.gsp.test.util.MojoTestFixture;
+import jp.co.tis.gsp.test.util.TestDB;
+import jp.co.tis.gsp.test.util.TestDBPattern;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.repository.RepositorySystem;
@@ -16,12 +20,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import jp.co.tis.gsp.test.util.DBTestUtil;
-import jp.co.tis.gsp.test.util.DirUtil;
-import jp.co.tis.gsp.test.util.Entry;
-import jp.co.tis.gsp.test.util.MojoTestFixture;
-import jp.co.tis.gsp.test.util.TestDB;
-import jp.co.tis.gsp.test.util.TestDBPattern;
+
 
 public class ImportSchemaMojoTest extends AbstractDdlMojoTest<ImportSchemaMojo> {
 

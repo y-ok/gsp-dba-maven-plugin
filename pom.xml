@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.sonatype.oss</groupId>
@@ -14,14 +15,14 @@
       To automate the routine work of the DBA, it is a tool to be able to concentrate on the data modeling work.
     </description>
     <url>https://github.com/coastland/gsp-dba-maven-plugin</url>
-    
+
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
         </license>
     </licenses>
-    
+
     <developers>
         <developer>
             <name>Yoshitaka Kawashima</name>
@@ -54,13 +55,13 @@
             <organizationUrl>https://github.com/coastland</organizationUrl>
         </developer>
     </developers>
-    
+
     <scm>
         <connection>scm:git:git://github.com/coastland/gsp-dba-maven-plugin.git</connection>
         <developerConnection>scm:git:ssh://github.com/coastland/gsp-dba-maven-plugin.git</developerConnection>
         <url>https://github.com/coastland/gsp-dba-maven-plugin/tree/master</url>
     </scm>
-    
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh-snapshot</id>
@@ -73,7 +74,7 @@
     </distributionManagement>
 
     <properties>
-        <seasarVersion>2.4.46</seasarVersion>
+        <seasarVersion>2.4.48</seasarVersion>
         <mavenVersion>3.0.5</mavenVersion>
         <mavenPluginPluginVersion>3.3</mavenPluginPluginVersion>
         <jacoco.ut.execution.data.file>${project.build.directory}/coverage-reports/jacoco-ut.exec</jacoco.ut.execution.data.file>
@@ -97,6 +98,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <manifestEntries>
@@ -130,6 +132,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -168,9 +171,33 @@
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.2</version>
                     <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
+                        <source>1.8</source>
+                        <target>1.8</target>
                         <encoding>UTF-8</encoding>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-enforcer-plugin</artifactId>
+                                        <versionRange>[1.0.0,)</versionRange>
+                                        <goals>
+                                            <goal>enforce</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
                     </configuration>
                 </plugin>
             </plugins>
@@ -189,12 +216,12 @@
     </repositories>
 
     <dependencies>
-      <dependency>
-        <groupId>org.seasar.doma</groupId>
-        <artifactId>doma</artifactId>
-        <version>2.16.0</version>
-        <scope>provided</scope>
-      </dependency>
+        <dependency>
+            <groupId>org.seasar.doma</groupId>
+            <artifactId>doma</artifactId>
+            <version>2.16.0</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -293,7 +320,7 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.7</version>
+            <version>1.7.30</version>
         </dependency>
 
         <dependency>
@@ -317,17 +344,10 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <version>1.4.182</version>
+            <version>1.4.200</version>
             <scope>test</scope>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>com.oracle</groupId>-->
-            <!--<artifactId>ojdbc6</artifactId>-->
-            <!--<version>11.2.0.2.0</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        
         <dependency>
             <groupId>org.codehaus.mojo</groupId>
             <artifactId>sql-maven-plugin</artifactId>
@@ -338,14 +358,13 @@
                     <groupId>org.apache.maven</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>        
-        
-        
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.apache.maven.plugin-testing</groupId>
             <artifactId>maven-plugin-testing-harness</artifactId>
-            <version>2.1</version>
+            <version>3.3.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -375,7 +394,7 @@
         <dependency>
             <groupId>org.apache.maven.shared</groupId>
             <artifactId>maven-invoker</artifactId>
-            <version>2.0.11</version>
+            <version>3.0.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -384,9 +403,9 @@
             <version>1.13.1</version>
             <scope>test</scope>
         </dependency>
-        
+
         <dependency>
-        <groupId>org.postgresql</groupId>
+            <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>9.4.1208.jre6</version>
             <scope>test</scope>
@@ -397,28 +416,6 @@
             <version>5.1.37</version>
             <scope>test</scope>
         </dependency>
-        
-<!--
-        <dependency>
-            <groupId>com.ibm</groupId>
-            <artifactId>db2jcc4</artifactId>
-            <version>9.7.200.358</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.2.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft</groupId>
-            <artifactId>sqljdbc4</artifactId>
-            <version>4.0</version>
-            <scope>test</scope>
-        </dependency>
--->
-
 
     </dependencies>
 
@@ -482,10 +479,10 @@
             <build>
                 <plugins>
                     <plugin>
-                       <groupId>org.apache.maven.plugins</groupId>
-                       <artifactId>maven-source-plugin</artifactId>
-                       <version>2.2.1</version>
-                       <executions>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2.1</version>
+                        <executions>
                             <execution>
                                 <id>attach-sources</id>
                                 <goals>
@@ -522,7 +519,7 @@
                         </executions>
                     </plugin>
                 </plugins>
-            </build>    
+            </build>
         </profile>
         <profile>
             <id>all_test</id>
@@ -592,7 +589,7 @@
                                 <goal>test</goal>
                             </goals>
                             <properties>
-                              <gsp.version>${project.version}</gsp.version>
+                                <gsp.version>${project.version}</gsp.version>
                             </properties>
                         </configuration>
                         <executions>
@@ -601,78 +598,78 @@
                                 <goals>
                                     <goal>install</goal>
                                 </goals>
-                           </execution>
-                           <execution>
-                               <id>db2</id>
-                               <goals>
-                                   <goal>run</goal>
-                               </goals>
-                               <configuration>
-                                   <profiles>
-                                       <profile>db2</profile>
-                                   </profiles>
-                               </configuration>
-                           </execution>
-                           <execution>
-                               <id>h2</id>
-                               <goals>
-                                   <goal>run</goal>
-                               </goals>
-                               <configuration>
-                                   <profiles>
-                                       <profile>h2</profile>
-                                   </profiles>
-                               </configuration>
-                           </execution>
-                           <execution>
-                               <id>mysql</id>
-                               <goals>
-                                   <goal>run</goal>
-                               </goals>
-                               <configuration>
-                                   <profiles>
-                                       <profile>mysql</profile>
-                                   </profiles>
-                               </configuration>
-                           </execution>
-                           <execution>
-                               <id>oracle</id>
-                               <goals>
-                                   <goal>run</goal>
-                               </goals>
-                               <configuration>
-                                   <profiles>
-                                       <profile>oracle</profile>
-                                   </profiles>
-                               </configuration>
-                           </execution>
-                           <execution>
-                               <id>postgresql</id>
-                               <goals>
-                                   <goal>run</goal>
-                               </goals>
-                               <configuration>
-                                   <profiles>
-                                       <profile>postgresql</profile>
-                                   </profiles>
-                               </configuration>
-                           </execution>
-                           <execution>
-                               <id>sqlserver</id>
-                               <goals>
-                                   <goal>run</goal>
-                               </goals>
-                               <configuration>
-                                   <profiles>
-                                       <profile>sqlserver</profile>
-                                   </profiles>
-                               </configuration>
-                           </execution>
-                       </executions>
-                   </plugin>
+                            </execution>
+                            <execution>
+                                <id>db2</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>db2</profile>
+                                    </profiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>h2</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>h2</profile>
+                                    </profiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>mysql</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>mysql</profile>
+                                    </profiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>oracle</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>oracle</profile>
+                                    </profiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>postgresql</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>postgresql</profile>
+                                    </profiles>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>sqlserver</id>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <profiles>
+                                        <profile>sqlserver</profile>
+                                    </profiles>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
-            
+
             <reporting>
                 <plugins>
                     <plugin>
@@ -710,15 +707,15 @@
                     </plugin>
                 </plugins>
             </reporting>
-          </profile>
-          <profile>
+        </profile>
+        <profile>
             <id>disable-java8-doclint</id>
             <activation>
-              <jdk>[1.8,)</jdk>
+                <jdk>[1.8,)</jdk>
             </activation>
             <properties>
-              <additionalparam>-Xdoclint:none</additionalparam>
+                <additionalparam>-Xdoclint:none</additionalparam>
             </properties>
-          </profile>
+        </profile>
     </profiles>
 </project>

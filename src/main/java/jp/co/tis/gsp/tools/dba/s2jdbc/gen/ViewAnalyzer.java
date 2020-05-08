@@ -21,11 +21,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.list.UnmodifiableList;
-import org.apache.commons.lang.StringUtils;
-
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.expression.AllComparisonExpression;
 import net.sf.jsqlparser.expression.AnalyticExpression;
@@ -101,6 +96,11 @@ import net.sf.jsqlparser.statement.select.SubJoin;
 import net.sf.jsqlparser.statement.select.SubSelect;
 import net.sf.jsqlparser.statement.select.ValuesList;
 import net.sf.jsqlparser.statement.select.WithItem;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.list.UnmodifiableList;
+import org.apache.commons.lang.StringUtils;
+
+
 
 public class ViewAnalyzer implements SelectVisitor, SelectItemVisitor,
 		FromItemVisitor {
@@ -190,7 +190,6 @@ public class ViewAnalyzer implements SelectVisitor, SelectItemVisitor,
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void visit(PlainSelect select) {
 		if (!CollectionUtils.isEmpty(select.getGroupByColumnReferences())
@@ -198,7 +197,7 @@ public class ViewAnalyzer implements SelectVisitor, SelectItemVisitor,
 			isSimple = false;
 		} else {
 			select.getFromItem().accept(this);
-			for (SelectItem item : (List<SelectItem>) select.getSelectItems()) {
+			for (SelectItem item : select.getSelectItems()) {
 				item.accept(this);
 			}
 		}

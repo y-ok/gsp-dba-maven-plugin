@@ -18,11 +18,13 @@ package jp.co.tis.gsp.tools.dba.mojo;
 
 import java.io.File;
 import java.io.IOException;
-
+import jp.co.tis.gsp.tools.dba.dialect.Dialect;
+import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
+import jp.co.tis.gsp.tools.dba.dialect.param.ExportParams;
+import jp.co.tis.gsp.tools.dba.util.DialectUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -30,10 +32,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.archiver.Archiver;
 import org.codehaus.plexus.archiver.jar.JarArchiver;
 
-import jp.co.tis.gsp.tools.dba.dialect.Dialect;
-import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
-import jp.co.tis.gsp.tools.dba.dialect.param.ExportParams;
-import jp.co.tis.gsp.tools.dba.util.DialectUtil;
+
 
 /**
  * export-schema.
@@ -48,10 +47,10 @@ public class ExportSchemaMojo extends AbstractDbaMojo {
     @Parameter(defaultValue = "target/dump")
 	protected File outputDirectory;
 
-    @Component( role = Archiver.class, hint = "jar" )
+    @Component(role = Archiver.class, hint = "jar")
     protected JarArchiver jarArchiver;
 
-    @Component
+    @Parameter(defaultValue = "${plugin}", readonly = true)
     private MavenProject project;
     
     @Parameter(defaultValue = "target/ddl")
@@ -64,7 +63,7 @@ public class ExportSchemaMojo extends AbstractDbaMojo {
     File outputDirectoryTemp;
    
 	@Override
-	protected void executeMojoSpec() throws MojoExecutionException, MojoFailureException {
+	protected void executeMojoSpec() throws MojoExecutionException {
 		Dialect dialect = DialectFactory.getDialect(url, driver);
 		DialectUtil.setDialect(dialect);
 		
@@ -89,7 +88,6 @@ public class ExportSchemaMojo extends AbstractDbaMojo {
 		try {
 		    ExportParams expParams = createExportParams();
 			dialect.exportSchema(expParams);
-
 		} catch (Exception e) {
 			throw new MojoExecutionException("データのExportに失敗しました。 ", e);
 		}

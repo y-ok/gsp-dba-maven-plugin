@@ -1,5 +1,6 @@
 package jp.co.tis.gsp.tools.dba.util;
 
+import com.csvreader.CsvReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,11 +12,13 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-
+import jp.co.tis.gsp.tools.db.EntityDependencyParser;
+import jp.co.tis.gsp.tools.dba.CsvInsertHandler;
+import jp.co.tis.gsp.tools.dba.dialect.Dialect;
+import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.logging.Log;
 import org.seasar.extension.jdbc.util.ConnectionUtil;
 import org.seasar.framework.util.DriverManagerUtil;
@@ -23,13 +26,9 @@ import org.seasar.framework.util.FileInputStreamUtil;
 import org.seasar.framework.util.StringUtil;
 import org.seasar.framework.util.tiger.CollectionsUtil;
 
-import com.csvreader.CsvReader;
 
-import jp.co.tis.gsp.tools.db.EntityDependencyParser;
-import jp.co.tis.gsp.tools.dba.CsvInsertHandler;
-import jp.co.tis.gsp.tools.dba.dialect.Dialect;
-import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 
+@SuppressWarnings("rawtypes")
 public class CsvLoader {
 
     private String url;

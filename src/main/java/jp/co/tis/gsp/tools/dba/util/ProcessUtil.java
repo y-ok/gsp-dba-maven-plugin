@@ -21,13 +21,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Map;
-
 import org.apache.commons.io.IOUtils;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
+
 
 public class ProcessUtil {
-	private static final Log log = new SystemStreamLog();
 
 	public static void exec(String... args) throws IOException, InterruptedException {
         exec(null, args);

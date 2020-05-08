@@ -18,18 +18,17 @@ package jp.co.tis.gsp.tools.dba.mojo;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
-
+import jp.co.tis.gsp.tools.db.LengthSemantics;
+import jp.co.tis.gsp.tools.db.ObjectBrowserErParser;
+import jp.co.tis.gsp.tools.dba.dialect.Dialect;
+import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import jp.co.tis.gsp.tools.db.LengthSemantics;
-import jp.co.tis.gsp.tools.db.ObjectBrowserErParser;
-import jp.co.tis.gsp.tools.dba.dialect.Dialect;
-import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
+
 
 /**
  * generate-ddl.

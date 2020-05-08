@@ -2,9 +2,8 @@ package jp.co.tis.gsp.test.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.regex.Pattern;
-
 import org.apache.commons.io.FileUtils;
+
 
 public class FileEntry extends Entry {
 
@@ -15,7 +14,6 @@ public class FileEntry extends Entry {
 	@Override
 	public void debugPrint() {
 		System.out.println(this.getFullPath());
-//		System.out.println(root);
 	}
 
 	@Override

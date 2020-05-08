@@ -16,24 +16,24 @@
 
 package jp.co.tis.gsp.tools.dba.s2jdbc.gen;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import javax.persistence.TemporalType;
 import org.seasar.extension.jdbc.gen.desc.AttributeDesc;
 import org.seasar.extension.jdbc.gen.internal.model.AttributeModelFactoryImpl;
 import org.seasar.extension.jdbc.gen.model.AttributeModel;
 import org.seasar.framework.convention.PersistenceConvention;
 
-import javax.persistence.TemporalType;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 public class JSR310AttributeModelFactoryImpl extends AttributeModelFactoryImpl {
 
     public JSR310AttributeModelFactoryImpl(boolean showColumnName, boolean showColumnDefinition,
-                                           boolean useTemporalType, PersistenceConvention persistenceConvention) {
+            boolean useTemporalType, PersistenceConvention persistenceConvention) {
         super(showColumnName, showColumnDefinition, useTemporalType, persistenceConvention);
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     protected void doAttributeClass(AttributeModel attributeModel, AttributeDesc attributeDesc) {
         final Class attributeClass = attributeDesc.getAttributeClass();
         final TemporalType primaryTemporalType = attributeDesc.getPrimaryTemporalType();

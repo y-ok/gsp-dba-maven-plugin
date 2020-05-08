@@ -11,7 +11,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-
+import jp.co.tis.gsp.test.util.MojoTestFixture;
+import jp.co.tis.gsp.test.util.TestDB;
+import jp.co.tis.gsp.test.util.TestDBPattern;
+import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 import org.apache.maven.DefaultMaven;
 import org.apache.maven.Maven;
 import org.apache.maven.artifact.Artifact;
@@ -57,263 +60,275 @@ import org.seasar.framework.util.StringUtil;
 import org.seasar.framework.util.tiger.ReflectionUtil;
 import org.sonatype.aether.util.DefaultRepositorySystemSession;
 
-import jp.co.tis.gsp.test.util.MojoTestFixture;
-import jp.co.tis.gsp.test.util.TestDB;
-import jp.co.tis.gsp.test.util.TestDBPattern;
-import jp.co.tis.gsp.tools.dba.dialect.DialectFactory;
 
+@SuppressWarnings("deprecation")
 @RunWith(BlockJUnit4ClassRunner.class)
 public abstract class AbstractDdlMojoTest<E> extends AbstractMojoTestCase {
-	
-	protected static final String FS = System.getProperty("file.separator");
+    protected static final String FS = System.getProperty("file.separator");
 
-	public static final String GENERATE_DDL = "generate-ddl";
-	public static final String EXECUTE_DDL = "execute-ddl";
-	public static final String GENERATE_ENTITY = "generate-entity";
-	public static final String EXPORT_SCHEMA = "export-schema";
-	public static final String IMPORT_SCHEMA = "import-schema";
-	public static final String LOAD_DATA = "load-data";
+    public static final String GENERATE_DDL = "generate-ddl";
+    public static final String EXECUTE_DDL = "execute-ddl";
+    public static final String GENERATE_ENTITY = "generate-entity";
+    public static final String EXPORT_SCHEMA = "export-schema";
+    public static final String IMPORT_SCHEMA = "import-schema";
+    public static final String LOAD_DATA = "load-data";
 
-	protected Class<?> mojoType = (Class<?>) ((ParameterizedType) getClass().getGenericSuperclass())
-			.getActualTypeArguments()[0];
-	protected E mojo;
-	protected MavenExecutionRequest currentMavenExecutionRequest;
+    protected Class<?> mojoType = (Class<?>) ((ParameterizedType) getClass().getGenericSuperclass())
+            .getActualTypeArguments()[0];
+    protected E mojo;
+    protected MavenExecutionRequest currentMavenExecutionRequest;
 
-	protected MavenProject currentProject;
+    protected MavenProject currentProject;
 
-	/** 各Mojoテストメソッド実行時に参照される`{@code MojoTestFixture}`のリスト */
-	List<MojoTestFixture> mojoTestFixtureList;
+    /** 各Mojoテストメソッド実行時に参照される`{@code MojoTestFixture}`のリスト */
+    List<MojoTestFixture> mojoTestFixtureList;
 
-	@Before
-	public void setUp() throws Exception {
-		super.setUp();
-	}
-	
-	/**
-	 * Dialectを外から差し替えるテストケースにおいて、差し替えたDialectのclassMapを初期化する。 <br />
-	 * 後続のテストケースに影響を与えないため。
-	 */
-	@After
-	public void after() {
-		Field classMap = ReflectionUtil.getDeclaredField(DialectFactory.class, "classMap");
-		classMap.setAccessible(true);
-		ReflectionUtil.setStaticValue(classMap, new HashMap<String, Class<?>>());
-	}
+    @Override
+    @Before
+    public void setUp() throws Exception {
+        super.setUp();
+    }
 
-	/**
-	 * テストメソッド実行時に、`{@code TestCasePattern}`アノテーションから`
-	 * {@code mojoTestFixtureList}`を生成.
-	 */
-	@Rule
-	public TestRule caseSetUpper = new TestWatcher() {
-		protected void starting(Description d) {
+    /**
+     * Dialectを外から差し替えるテストケースにおいて、差し替えたDialectのclassMapを初期化する。 <br />
+     * 後続のテストケースに影響を与えないため。
+     */
+    @After
+    public void after() {
+        Field classMap = ReflectionUtil.getDeclaredField(DialectFactory.class, "classMap");
+        classMap.setAccessible(true);
+        ReflectionUtil.setStaticValue(classMap, new HashMap<String, Class<?>>());
+    }
 
-			TestDBPattern tp = d.getAnnotation(TestDBPattern.class);
-			if (tp != null) {
-				mojoTestFixtureList = new ArrayList<MojoTestFixture>();
-				for (TestDB db : getDbCase(tp)) {
-					mojoTestFixtureList.add(new MojoTestFixture(d.getTestClass(), tp.testCase(), db));
-				}
-			}
+    /**
+     * テストメソッド実行時に、`{@code TestCasePattern}`アノテーションから` {@code mojoTestFixtureList}`を生成.
+     */
+    @Rule
+    public TestRule caseSetUpper = new TestWatcher() {
+        @Override
+        protected void starting(Description d) {
 
-		};
+            TestDBPattern tp = d.getAnnotation(TestDBPattern.class);
+            if (tp != null) {
+                mojoTestFixtureList = new ArrayList<MojoTestFixture>();
+                for (TestDB db : getDbCase(tp)) {
+                    mojoTestFixtureList
+                            .add(new MojoTestFixture(d.getTestClass(), tp.testCase(), db));
+                }
+            }
 
-		// プロパティファイルとTestCasePattern#testDb要素から実行するデータベースパターンを取得する
-		private TestDB[] getDbCase(TestDBPattern tp) {
+        };
 
-			// プロパティファイルにtestDBが設定されている場合。
-			// 設定されたtestDBがアノテーションに含まれている場合はそのtestDB要素だけの配列を返す
-			try {
-				String propPath = getMojoTestRoot() + "/mojoTest.properties";
-				Properties prop = new Properties();
-				prop.load(new FileInputStream(new File(propPath)));
+        // プロパティファイルとTestCasePattern#testDb要素から実行するデータベースパターンを取得する
+        private TestDB[] getDbCase(TestDBPattern tp) {
 
-				String testDb = prop.getProperty("testDB");
+            // プロパティファイルにtestDBが設定されている場合。
+            // 設定されたtestDBがアノテーションに含まれている場合はそのtestDB要素だけの配列を返す
+            try {
+                String propPath = getMojoTestRoot() + "/mojoTest.properties";
+                Properties prop = new Properties();
+                prop.load(new FileInputStream(new File(propPath)));
 
-				// mojoTest.properties にDBの指定がない場合は全ての
-				if (StringUtil.isBlank(testDb)) {
-					return tp.testDb();
-				}
+                String testDb = prop.getProperty("testDB");
 
-				if (!StringUtil.isBlank(testDb) && Arrays.asList(tp.testDb()).contains(TestDB.valueOf(testDb))) {
-					return new TestDB[] { TestDB.valueOf(testDb) };
-				} else {
-					return new TestDB[] {};
-				}
+                // mojoTest.properties にDBの指定がない場合は全ての
+                if (StringUtil.isBlank(testDb)) {
+                    return tp.testDb();
+                }
 
-			} catch (Exception e) {
-				e.printStackTrace();
-				return null;
-			}
+                if (!StringUtil.isBlank(testDb)
+                        && Arrays.asList(tp.testDb()).contains(TestDB.valueOf(testDb))) {
+                    return new TestDB[] {TestDB.valueOf(testDb)};
+                } else {
+                    return new TestDB[] {};
+                }
 
-		}
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
 
-		protected void finished(Description description) {
-			mojoTestFixtureList = null;
-		}
-	};
+        }
 
-	/**
-	 * Mojoテストのルートディレクトリを取得する。
-	 * 
-	 * @return ルートディレクトリのパス
-	 * @throws Exception
-	 */
-	protected String getMojoTestRoot() throws Exception {
-		return new File(this.getClass().getResource("").getPath()).getAbsolutePath()
-				.replaceFirst(System.getProperty("file.separator") + "$", "");
-	}
+        @Override
+        protected void finished(Description description) {
+            mojoTestFixtureList = null;
+        }
+    };
 
-	/**
-	 * テストクラス/テストケース/テストＤＢ までの絶対パスを取得する。
-	 * 
-	 * @param mf
-	 * @return - パス
-	 * @throws Exception
-	 */
-	protected String getTestCaseDBPath(MojoTestFixture mf) throws Exception {
-		Class<?> mojoClass = Class.forName(mojoType.getName());
-		String mojoSimpleName = mojoClass.getSimpleName();
-		return getMojoTestRoot() + FS + mojoSimpleName + "_test" + FS + mf.caseName + FS + mf.testDb;
-	}
+    /**
+     * Mojoテストのルートディレクトリを取得する。
+     * 
+     * @return ルートディレクトリのパス
+     * @throws Exception
+     */
+    protected String getMojoTestRoot() {
+        return new File(this.getClass().getResource("").getPath()).getAbsolutePath()
+                .replaceFirst(System.getProperty("file.separator") + "$", "");
+    }
 
-	/**
-	 * 期待値ファイルが格納されているルートフォルダ.
-	 * 
-	 * Mojo実行後に生成されるファイルと突合する際に利用する.
-	 * 
-	 * @param mf
-	 *            - Mojo生成パラメータ
-	 * @return 期待値ファイルが格納されているルートフォルダ
-	 */
-	protected String getExpectedPath(MojoTestFixture mf) throws Exception {
-		return getTestCaseDBPath(mf) + FS + "expected";
-	}
+    /**
+     * テストクラス/テストケース/テストＤＢ までの絶対パスを取得する。
+     * 
+     * @param mf
+     * @return - パス
+     * @throws ClassNotFoundException
+     * @throws Exception
+     */
+    protected String getTestCaseDBPath(MojoTestFixture mf) throws ClassNotFoundException {
+        Class<?> mojoClass = Class.forName(mojoType.getName());
+        String mojoSimpleName = mojoClass.getSimpleName();
+        return getMojoTestRoot() + FS + mojoSimpleName + "_test" + FS + mf.caseName + FS
+                + mf.testDb;
+    }
 
-	/**
-	 * 指定ローカルリポジトリにMavenのArtifactをインストールします。
-	 * 
-	 * @param artifact
-	 *            - アーティファクト
-	 * @param localRep
-	 *            - ローカルリポジトリ
-	 * @throws Exception
-	 *             - 例外
-	 */
-	protected void installArtifactToTestRepo(Artifact artifact, ArtifactRepository localRep) throws Exception {
-		ArtifactInstaller ai = this.lookup(ArtifactInstaller.class);
-		ai.install(artifact.getFile(), artifact, localRep);
-	}
+    /**
+     * 期待値ファイルが格納されているルートフォルダ.
+     * 
+     * Mojo実行後に生成されるファイルと突合する際に利用する.
+     * 
+     * @param mf - Mojo生成パラメータ
+     * @return 期待値ファイルが格納されているルートフォルダ
+     * @throws ClassNotFoundException
+     */
+    protected String getExpectedPath(MojoTestFixture mf) throws ClassNotFoundException {
+        return getTestCaseDBPath(mf) + FS + "expected";
+    }
 
-	/**
-	 * オリジナルの実装がおかしいと思われるのでコピー修正実装でオーバーライド。
-	 * 
-	 * @see org.apache.maven.plugin.testing.AbstractMojoTestCase#lookupConfiguredMojo
-	 */
-	protected Mojo lookupConfiguredMojo(MavenSession session, MojoExecution execution)
-			throws Exception, ComponentConfigurationException {
-		MavenProject project = session.getCurrentProject();
-		MojoDescriptor mojoDescriptor = execution.getMojoDescriptor();
+    /**
+     * 指定ローカルリポジトリにMavenのArtifactをインストールします。
+     * 
+     * @param artifact - アーティファクト
+     * @param localRep - ローカルリポジトリ
+     * @throws Exception - 例外
+     */
+    protected void installArtifactToTestRepo(Artifact artifact, ArtifactRepository localRep)
+            throws Exception {
+        ArtifactInstaller ai = this.lookup(ArtifactInstaller.class);
+        ai.install(artifact.getFile(), artifact, localRep);
+    }
 
-		Mojo mojo = (Mojo) lookup(mojoDescriptor.getRole(), mojoDescriptor.getRoleHint());
+    /**
+     * オリジナルの実装がおかしいと思われるのでコピー修正実装でオーバーライド。
+     * 
+     * @see org.apache.maven.plugin.testing.AbstractMojoTestCase#lookupConfiguredMojo
+     */
+    @Override
+    protected Mojo lookupConfiguredMojo(MavenSession session, MojoExecution execution)
+            throws Exception, ComponentConfigurationException {
+        MavenProject project = session.getCurrentProject();
+        MojoDescriptor mojoDescriptor = execution.getMojoDescriptor();
 
-		ExpressionEvaluator evaluator = new PluginParameterExpressionEvaluator(session, execution);
+        Mojo mojo = (Mojo) lookup(mojoDescriptor.getRole(), mojoDescriptor.getRoleHint());
 
-		Xpp3Dom configuration = null;
-		Plugin plugin = project.getPlugin(mojoDescriptor.getPluginDescriptor().getPluginLookupKey());
-		if (plugin != null) {
-			configuration = (Xpp3Dom) plugin.getConfiguration();
-		}
-		if (configuration == null) {
-			configuration = new Xpp3Dom("configuration");
-		}
+        ExpressionEvaluator evaluator = new PluginParameterExpressionEvaluator(session, execution);
 
-		// ここ。オリジナル実装はマージ元とマージ先が逆になっていておかしいので、逆にする。
-		configuration = Xpp3Dom.mergeXpp3Dom(configuration, execution.getConfiguration());
+        Xpp3Dom configuration = null;
+        Plugin plugin =
+                project.getPlugin(mojoDescriptor.getPluginDescriptor().getPluginLookupKey());
+        if (plugin != null) {
+            configuration = (Xpp3Dom) plugin.getConfiguration();
+        }
+        if (configuration == null) {
+            configuration = new Xpp3Dom("configuration");
+        }
 
-		// finalizeMojoConfiguration()のタイミングもここで行う必要があるので追加。
-		execution.setConfiguration(configuration);
-		Method finalizeConfig = ReflectionUtil.getDeclaredMethod(AbstractMojoTestCase.class,
-				"finalizeMojoConfiguration", new Class[] { MojoExecution.class });
-		finalizeConfig.setAccessible(true);
-		ReflectionUtil.invoke(finalizeConfig, this, execution);
+        // ここ。オリジナル実装はマージ元とマージ先が逆になっていておかしいので、逆にする。
+        configuration = Xpp3Dom.mergeXpp3Dom(configuration, execution.getConfiguration());
 
-		PlexusConfiguration pluginConfiguration = new XmlPlexusConfiguration(execution.getConfiguration());
-		ComponentConfigurator configurator = getContainer().lookup(ComponentConfigurator.class, "basic");
-		configurator.configureComponent(mojo, pluginConfiguration, evaluator, getContainer().getContainerRealm(), null);
+        // finalizeMojoConfiguration()のタイミングもここで行う必要があるので追加。
+        execution.setConfiguration(configuration);
+        Method finalizeConfig = ReflectionUtil.getDeclaredMethod(AbstractMojoTestCase.class,
+                "finalizeMojoConfiguration", new Class[] {MojoExecution.class});
+        finalizeConfig.setAccessible(true);
+        ReflectionUtil.invoke(finalizeConfig, this, execution);
 
-		return mojo;
-	}
+        PlexusConfiguration pluginConfiguration =
+                new XmlPlexusConfiguration(execution.getConfiguration());
+        ComponentConfigurator configurator =
+                getContainer().lookup(ComponentConfigurator.class, "basic");
+        configurator.configureComponent(mojo, pluginConfiguration, evaluator,
+                getContainer().getContainerRealm(), null);
 
-	public E lookupConfiguredMojo(File pom, String goal, TestDB testDb) throws Exception {
+        return mojo;
+    }
 
-		// Mojoテストリソースディレクトリのパスをシステムプロパティに設定しておく
-//		System.setProperty("MojoTestRoot", getMojoTestRoot());
+    @SuppressWarnings(value = "unchecked")
+    public E lookupConfiguredMojo(File pom, String goal, TestDB testDb) throws Exception {
 
-		// 各ＤＢの接続情報をシステムプロパティへマージする
-		Properties prop = new Properties();
-		prop.load(new FileInputStream(new File(Thread.currentThread().getContextClassLoader().getResource("jdbc_test.properties").getPath())));
-		System.getProperties().putAll(prop);
+        // Mojoテストリソースディレクトリのパスをシステムプロパティに設定しておく
+        // System.setProperty("MojoTestRoot", getMojoTestRoot());
 
-		// Maven実行リクエスト初期化
-		MavenExecutionRequest executionRequest = new DefaultMavenExecutionRequest();
+        // 各ＤＢの接続情報をシステムプロパティへマージする
+        Properties prop = new Properties();
+        prop.load(new FileInputStream(new File(Thread.currentThread().getContextClassLoader()
+                .getResource("jdbc_test.properties").getPath())));
+        System.getProperties().putAll(prop);
 
-		// テスト用のsettingファイルで初期化
-//		File settings = new File(this.getClass().getResource("settings.xml").getPath());
-		File settings = new File(Thread.currentThread().getContextClassLoader().getResource("settings.xml").getPath());
-		MavenExecutionRequestPopulator populator = getContainer().lookup(MavenExecutionRequestPopulator.class);
-		MavenSettingsBuilder mb = this.lookup(MavenSettingsBuilder.class);
-		Settings st = mb.buildSettings(settings);
-		populator.populateFromSettings(executionRequest, st);
+        // Maven実行リクエスト初期化
+        MavenExecutionRequest executionRequest = new DefaultMavenExecutionRequest();
 
-		// カレントディレクトリをセット
-		executionRequest.setBaseDirectory(pom.getParentFile());
+        // テスト用のsettingファイルで初期化
+        // File settings = new File(this.getClass().getResource("settings.xml").getPath());
+        File settings = new File(Thread.currentThread().getContextClassLoader()
+                .getResource("settings.xml").getPath());
+        MavenExecutionRequestPopulator populator =
+                getContainer().lookup(MavenExecutionRequestPopulator.class);
+        MavenSettingsBuilder mb = this.lookup(MavenSettingsBuilder.class);
+        Settings st = mb.buildSettings(settings);
+        populator.populateFromSettings(executionRequest, st);
 
-		// プロファイルを指定DBのプロファイルにセット
-		executionRequest.setActiveProfiles(Collections.singletonList(testDb.name()));
+        // カレントディレクトリをセット
+        executionRequest.setBaseDirectory(pom.getParentFile());
 
-		// ローカルリポジトリオブジェクトのセット
-		String localRepoPath = this.getClass().getResource("testLocalRepo").toURI().toURL().toString();
-		executionRequest.setLocalRepository(new MavenArtifactRepository(RepositorySystem.DEFAULT_LOCAL_REPO_ID,
-				localRepoPath, new DefaultRepositoryLayout(),
-				new ArtifactRepositoryPolicy(), new ArtifactRepositoryPolicy()));
+        // プロファイルを指定DBのプロファイルにセット
+        executionRequest.setActiveProfiles(Collections.singletonList(testDb.name()));
 
-		// 実行プロジェクトを作成
-		ProjectBuildingRequest buildingRequest = executionRequest.getProjectBuildingRequest();
-		DefaultMaven maven = (DefaultMaven) getContainer().lookup(Maven.class);
-		DefaultRepositorySystemSession repoSession = (DefaultRepositorySystemSession) maven
-				.newRepositorySession(executionRequest);
-		repoSession.setOffline(true);
-		buildingRequest.setRepositorySession(repoSession);
-		ProjectBuilder projectBuilder = this.lookup(ProjectBuilder.class);
-		MavenProject project = projectBuilder.build(pom, buildingRequest).getProject();
+        // ローカルリポジトリオブジェクトのセット
+        String localRepoPath =
+                this.getClass().getResource("testLocalRepo").toURI().toURL().toString();
+        executionRequest.setLocalRepository(
+                new MavenArtifactRepository(RepositorySystem.DEFAULT_LOCAL_REPO_ID, localRepoPath,
+                        new DefaultRepositoryLayout(), new ArtifactRepositoryPolicy(),
+                        new ArtifactRepositoryPolicy()));
 
-		currentMavenExecutionRequest = executionRequest;
+        // 実行プロジェクトを作成
+        ProjectBuildingRequest buildingRequest = executionRequest.getProjectBuildingRequest();
+        DefaultMaven maven = (DefaultMaven) getContainer().lookup(Maven.class);
+        DefaultRepositorySystemSession repoSession =
+                (DefaultRepositorySystemSession) maven.newRepositorySession(executionRequest);
+        repoSession.setOffline(true);
+        buildingRequest.setRepositorySession(repoSession);
+        ProjectBuilder projectBuilder = this.lookup(ProjectBuilder.class);
+        MavenProject project = projectBuilder.build(pom, buildingRequest).getProject();
 
-		// 指定ゴールを持つMojoを取得
-		Mojo mojo = this.lookupConfiguredMojo(project, goal);
+        currentMavenExecutionRequest = executionRequest;
 
-		currentProject = project;
-		return (E) mojo;
-	}
+        // 指定ゴールを持つMojoを取得
+        Mojo mojo = this.lookupConfiguredMojo(project, goal);
 
-	@Override
-	protected MavenSession newMavenSession(MavenProject project) {
-		MavenExecutionResult result = new DefaultMavenExecutionResult();
+        currentProject = project;
+        return (E) mojo;
+    }
 
-		MavenSession session = new MavenSession(getContainer(),
-				project.getProjectBuildingRequest().getRepositorySession(), currentMavenExecutionRequest, result);
-		session.setCurrentProject(project);
-		session.setProjects(Arrays.asList(project));
+    @Override
+    protected MavenSession newMavenSession(MavenProject project) {
+        MavenExecutionResult result = new DefaultMavenExecutionResult();
 
-		try {
-			LegacySupport legacySupport = this.lookup(LegacySupport.class);
-			legacySupport.setSession(session);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        MavenSession session = new MavenSession(getContainer(),
+                project.getProjectBuildingRequest().getRepositorySession(),
+                currentMavenExecutionRequest, result);
+        session.setCurrentProject(project);
+        session.setProjects(Arrays.asList(project));
 
-		return session;
-	}
+        try {
+            LegacySupport legacySupport = this.lookup(LegacySupport.class);
+            legacySupport.setSession(session);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return session;
+    }
 
 }

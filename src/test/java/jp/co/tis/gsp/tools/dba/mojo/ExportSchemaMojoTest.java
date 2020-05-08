@@ -1,12 +1,10 @@
 package jp.co.tis.gsp.tools.dba.mojo;
 
-
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.File;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.Mojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Test;
@@ -48,7 +46,8 @@ public class ExportSchemaMojoTest extends AbstractDdlMojoTest<ExportSchemaMojo> 
 	 * @throws Exception
 	 */
 	@Test
-	@TestDBPattern(testCase = "basic", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.h2, TestDB.mysql, TestDB.db2, TestDB.sqlserver })
+	@TestDBPattern(testCase = "basic", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.h2, TestDB.mysql, TestDB.db2,
+			TestDB.sqlserver })
 	public void testBasic() throws Exception {
 
 		// 指定されたケース及びテスト対象のDBだけループ
@@ -56,7 +55,7 @@ public class ExportSchemaMojoTest extends AbstractDdlMojoTest<ExportSchemaMojo> 
 
 			// テストケース対象プロジェクトのpom.xmlを取得
 			File pom = new File(getTestCaseDBPath(mf) + "/pom.xml");
-			
+
 			ExportSchemaMojo mojo = this.lookupConfiguredMojo(pom, EXPORT_SCHEMA, mf.testDb);
 			DBTestUtil.dropSchema(mojo.schema, mojo.user, mojo.password, mojo.adminUser, mojo.adminPassword, mojo.url,
 					mojo.driver, mf.testDb);
@@ -72,13 +71,13 @@ public class ExportSchemaMojoTest extends AbstractDdlMojoTest<ExportSchemaMojo> 
 			loadMojo.execute();
 
 			// db2とsqlserverは汎用モードのため、バイナリデータの検証は無し
-			if(!mf.testDb.equals(TestDB.db2) && !mf.testDb.equals(TestDB.sqlserver)) {
-    			// 画像は手動でInsertする
-    			File file = new File(getTestCaseDBPath(mf) + "/data/neko.jpg");
-    
-    			for (long i = 1; i <= 20; i++) {
-    				DBTestUtil.insertFileTbl(i, file, loadMojo.url, loadMojo.user, loadMojo.password, null);
-    			}
+			if (!mf.testDb.equals(TestDB.db2) && !mf.testDb.equals(TestDB.sqlserver)) {
+				// 画像は手動でInsertする
+				File file = new File(getTestCaseDBPath(mf) + "/data/neko.jpg");
+
+				for (long i = 1; i <= 20; i++) {
+					DBTestUtil.insertFileTbl(i, file, loadMojo.url, loadMojo.user, loadMojo.password, null);
+				}
 			}
 
 			// pom.xmlより指定ゴールのMojoを取得し実行。Mavenプロファイルを指定する(DB)
@@ -116,7 +115,8 @@ public class ExportSchemaMojoTest extends AbstractDdlMojoTest<ExportSchemaMojo> 
 	 * @throws Exception
 	 */
 	@Test
-	@TestDBPattern(testCase = "another_schema", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2, TestDB.sqlserver })
+	@TestDBPattern(testCase = "another_schema", testDb = { TestDB.oracle, TestDB.postgresql, TestDB.db2,
+			TestDB.sqlserver })
 	public void testAnotherSchema() throws Exception {
 
 		// 指定されたケース及びテスト対象のDBだけループ
@@ -125,7 +125,7 @@ public class ExportSchemaMojoTest extends AbstractDdlMojoTest<ExportSchemaMojo> 
 			// テストケース対象プロジェクトのpom.xmlを取得
 			File pom = new File(getTestCaseDBPath(mf) + "/pom.xml");
 			ExportSchemaMojo mojo = this.lookupConfiguredMojo(pom, EXPORT_SCHEMA, mf.testDb);
-			
+
 			DBTestUtil.dropSchema(mojo.schema, mojo.user, mojo.password, mojo.adminUser, mojo.adminPassword, mojo.url,
 					mojo.driver, mf.testDb);
 
@@ -140,14 +140,14 @@ public class ExportSchemaMojoTest extends AbstractDdlMojoTest<ExportSchemaMojo> 
 			loadMojo.execute();
 
 			// db2とsqlserverは汎用モードのため、バイナリデータの検証は無し
-			if(!mf.testDb.equals(TestDB.db2) && !mf.testDb.equals(TestDB.sqlserver)) {
-    			// 画像は手動でInsertする
-    			File file = new File(getTestCaseDBPath(mf) + "/data/neko.jpg");
-    
-    			for (long i = 1; i <= 20; i++) {
-    				DBTestUtil.insertFileTbl(i, file, loadMojo.url, loadMojo.user, loadMojo.password,
-    						"GSPANOTHER.FILE_TBL");
-    			}
+			if (!mf.testDb.equals(TestDB.db2) && !mf.testDb.equals(TestDB.sqlserver)) {
+				// 画像は手動でInsertする
+				File file = new File(getTestCaseDBPath(mf) + "/data/neko.jpg");
+
+				for (long i = 1; i <= 20; i++) {
+					DBTestUtil.insertFileTbl(i, file, loadMojo.url, loadMojo.user, loadMojo.password,
+							"GSPANOTHER.FILE_TBL");
+				}
 			}
 
 			// pom.xmlより指定ゴールのMojoを取得し実行。Mavenプロファイルを指定する(DB)
@@ -226,14 +226,14 @@ public class ExportSchemaMojoTest extends AbstractDdlMojoTest<ExportSchemaMojo> 
 
 			// pom.xmlより指定ゴールのMojoを取得し実行。Mavenプロファイルを指定する(DB)
 			Mojo mojo = this.lookupConfiguredMojo(pom, EXPORT_SCHEMA, mf.testDb);
-			
+
 			try {
-			    mojo.execute();
-			    fail("期待した例外が発生しませんでした。");
-	         } catch (Exception e) {
-	             assertThat(e.getCause().getClass().equals(MojoExecutionException.class), is(true));
-	             assertThat(e.getCause().getMessage().equals("DDLディレクトリの指定が誤っています"), is(true));
-	         }
+				mojo.execute();
+				fail("期待した例外が発生しませんでした。");
+			} catch (Exception e) {
+				assertThat(e.getCause().getClass().equals(MojoExecutionException.class), is(true));
+				assertThat(e.getCause().getMessage().equals("DDLディレクトリの指定が誤っています"), is(true));
+			}
 
 		}
 	}
@@ -266,14 +266,14 @@ public class ExportSchemaMojoTest extends AbstractDdlMojoTest<ExportSchemaMojo> 
 
 			// pom.xmlより指定ゴールのMojoを取得し実行。Mavenプロファイルを指定する(DB)
 			Mojo mojo = this.lookupConfiguredMojo(pom, EXPORT_SCHEMA, mf.testDb);
-			
+
 			try {
-			    mojo.execute();
-			    fail("期待した例外が発生しませんでした。");
-	         } catch (Exception e) {
-	             assertThat(e.getCause().getClass().equals(MojoExecutionException.class), is(true));
-	             assertThat(e.getCause().getMessage().equals("extraDDLディレクトリの指定が誤っています"), is(true));
-	         }
+				mojo.execute();
+				fail("期待した例外が発生しませんでした。");
+			} catch (Exception e) {
+				assertThat(e.getCause().getClass().equals(MojoExecutionException.class), is(true));
+				assertThat(e.getCause().getMessage().equals("extraDDLディレクトリの指定が誤っています"), is(true));
+			}
 
 		}
 	}
